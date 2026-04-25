@@ -35,9 +35,15 @@ export function confirm(opts: ConfirmOptions): Promise<boolean> {
 
 export function ConfirmHost() {
   const [req, setReq] = useState<PendingRequest | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setPending = setReq;
+    setPending = (next) => {
+      if (next) {
+        setReq(next);
+        setVisible(true);
+      }
+    };
     return () => {
       setPending = null;
     };
@@ -45,12 +51,15 @@ export function ConfirmHost() {
 
   function close(ok: boolean) {
     req?.resolve(ok);
-    setReq(null);
+    setVisible(false);
+    // Keep `req` populated so the dialog keeps rendering its real content
+    // during the Modal's fade-out animation. It gets replaced on the next
+    // confirm() call.
   }
 
   return (
     <Modal
-      visible={!!req}
+      visible={visible}
       transparent
       animationType="fade"
       onRequestClose={() => close(false)}
