@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -90,6 +91,23 @@ export default function PageEditorScreen() {
     }
   }
 
+  async function setVisibility(updates: {
+    show_in_nav?: boolean;
+    show_in_footer?: boolean;
+    nav_label?: string | null;
+  }) {
+    if (!page) return;
+    setSaving(true);
+    try {
+      const updated = await pages.updatePage(pageId, updates);
+      setPage(updated);
+    } catch (e: any) {
+      Alert.alert("Error", e.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function handleDelete() {
     Alert.alert("Delete page", "This cannot be undone.", [
       { text: "Cancel", style: "cancel" },
@@ -157,10 +175,90 @@ export default function PageEditorScreen() {
           multiline
           blurOnSubmit
         />
-        <Text className="text-xs font-mono text-slate-400 mb-6">{page?.slug}</Text>
+        <Text className="text-xs font-mono text-slate-400 mb-4">{page?.slug}</Text>
+
+        {page && (
+          <VisibilityPanel
+            page={page}
+            onChange={setVisibility}
+          />
+        )}
 
         <BlockEditor blocks={blocks} onChange={handleBlocksChange} />
       </ScrollView>
     </KeyboardAvoidingView>
+  );
+}
+
+function VisibilityPanel({
+  page,
+  onChange,
+}: {
+  page: Page;
+  onChange: (updates: {
+    show_in_nav?: boolean;
+    show_in_footer?: boolean;
+    nav_label?: string | null;
+  }) => void;
+}) {
+  const [labelDraft, setLabelDraft] = useState(page.nav_label ?? "");
+  const showLabel = page.show_in_nav || page.show_in_footer;
+  const labelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setLabelDraft(page.nav_label ?? "");
+  }, [page.nav_label]);
+
+  function handleLabelChange(t: string) {
+    setLabelDraft(t);
+    if (labelTimer.current) clearTimeout(labelTimer.current);
+    labelTimer.current = setTimeout(() => {
+      onChange({ nav_label: t.trim() === "" ? null : t.trim() });
+    }, 800);
+  }
+
+  return (
+    <View className="bg-slate-50 rounded-xl border border-slate-100 px-4 py-3 mb-6">
+      <Text className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+        Show this page in
+      </Text>
+      <View className="flex-row items-center justify-between py-2">
+        <View className="flex-1">
+          <Text className="text-sm font-medium text-slate-800">Main navigation</Text>
+          <Text className="text-xs text-slate-400">Adds a link to your site's nav bar.</Text>
+        </View>
+        <Switch
+          value={page.show_in_nav}
+          onValueChange={(v) => onChange({ show_in_nav: v })}
+        />
+      </View>
+      <View className="flex-row items-center justify-between py-2 border-t border-slate-100">
+        <View className="flex-1">
+          <Text className="text-sm font-medium text-slate-800">Footer</Text>
+          <Text className="text-xs text-slate-400">Adds a link to your site's footer.</Text>
+        </View>
+        <Switch
+          value={page.show_in_footer}
+          onValueChange={(v) => onChange({ show_in_footer: v })}
+        />
+      </View>
+      {showLabel && (
+        <View className="border-t border-slate-100 pt-3 mt-1">
+          <Text className="text-xs font-medium text-slate-700 mb-1">Link label (optional)</Text>
+          <TextInput
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white"
+            placeholder={page.title}
+            placeholderTextColor="#94a3b8"
+            value={labelDraft}
+            onChangeText={handleLabelChange}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <Text className="text-xs text-slate-400 mt-1">
+            Defaults to the page title. Use a shorter label if your nav is tight.
+          </Text>
+        </View>
+      )}
+    </View>
   );
 }

@@ -3,11 +3,12 @@ import {
   Alert,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sites } from "@/lib/db";
 import type { Site } from "@/lib/db";
 
@@ -68,6 +69,8 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {site && <NavOverridePanel site={site} onChange={setSite} />}
+
         <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
           <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
             Stripe (coming soon)
@@ -105,5 +108,104 @@ export default function SettingsScreen() {
         </View>
       </View>
     </ScrollView>
+  );
+}
+
+function NavOverridePanel({
+  site,
+  onChange,
+}: {
+  site: Site;
+  onChange: (s: Site) => void;
+}) {
+  const [open, setOpen] = useState(
+    !!site.nav_selector || !!site.footer_selector
+  );
+  const [navSelector, setNavSelector] = useState(site.nav_selector ?? "");
+  const [footerSelector, setFooterSelector] = useState(
+    site.footer_selector ?? ""
+  );
+  const [saving, setSaving] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function queueSave(updates: { nav_selector?: string | null; footer_selector?: string | null }) {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(async () => {
+      setSaving(true);
+      try {
+        const updated = await sites.updateSite(site.id, updates);
+        onChange(updated);
+      } catch (e: any) {
+        Alert.alert("Error", e.message);
+      } finally {
+        setSaving(false);
+      }
+    }, 800);
+  }
+
+  function handleNav(t: string) {
+    setNavSelector(t);
+    queueSave({ nav_selector: t.trim() === "" ? null : t.trim() });
+  }
+
+  function handleFooter(t: string) {
+    setFooterSelector(t);
+    queueSave({ footer_selector: t.trim() === "" ? null : t.trim() });
+  }
+
+  return (
+    <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
+      <TouchableOpacity
+        onPress={() => setOpen((o) => !o)}
+        className="flex-row items-center justify-between"
+      >
+        <View className="flex-1">
+          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Nav & footer (advanced)
+          </Text>
+          <Text className="text-slate-500 text-xs mt-1 leading-relaxed">
+            By default Slate auto-detects {"<nav>"} and {"<footer>"}. Override
+            here only if your site uses custom markup.
+          </Text>
+        </View>
+        <Text className="text-slate-400 text-lg ml-2">{open ? "−" : "+"}</Text>
+      </TouchableOpacity>
+
+      {open && (
+        <View className="mt-4">
+          <Text className="text-xs font-medium text-slate-700 mb-1">
+            Nav CSS selector
+          </Text>
+          <TextInput
+            className="border border-slate-200 rounded-lg px-3 py-2 mb-1 text-sm text-slate-900 bg-slate-50 font-mono"
+            placeholder="header .menu, #site-nav"
+            placeholderTextColor="#94a3b8"
+            value={navSelector}
+            onChangeText={handleNav}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <Text className="text-xs text-slate-400 mb-3">
+            Leave blank to auto-detect.
+          </Text>
+
+          <Text className="text-xs font-medium text-slate-700 mb-1">
+            Footer CSS selector
+          </Text>
+          <TextInput
+            className="border border-slate-200 rounded-lg px-3 py-2 mb-1 text-sm text-slate-900 bg-slate-50 font-mono"
+            placeholder="footer.site-footer"
+            placeholderTextColor="#94a3b8"
+            value={footerSelector}
+            onChangeText={handleFooter}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          {saving && (
+            <Text className="text-xs text-slate-400 mt-1">Saving…</Text>
+          )}
+        </View>
+      )}
+    </View>
   );
 }

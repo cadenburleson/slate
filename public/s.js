@@ -272,6 +272,51 @@
       .catch(function () {});
   }
 
+  // ── Nav / Footer Injection ──────────────────────────────────────────────────
+
+  var NAV_FALLBACK_SELECTORS = ["nav", "header nav", "[role='navigation']"];
+  var FOOTER_FALLBACK_SELECTORS = ["footer", "[role='contentinfo']"];
+
+  function findChrome(override, fallbacks) {
+    if (override) {
+      var picked = document.querySelector(override);
+      if (picked) return picked;
+    }
+    for (var i = 0; i < fallbacks.length; i++) {
+      var found = document.querySelector(fallbacks[i]);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function injectLinks(container, items) {
+    if (!container || !items || !items.length) return;
+    // Prefer a list inside the container so the new links match existing markup.
+    var list = container.querySelector("ul, ol") || container;
+    items.forEach(function (item) {
+      if (!item.slug) return;
+      // Skip if a link to this slug already exists anywhere in the container.
+      if (container.querySelector('a[href="' + item.slug + '"]')) return;
+      var link = el("a", "slate-nav-link");
+      link.href = item.slug;
+      link.textContent = item.label || item.slug;
+      if (list.tagName === "UL" || list.tagName === "OL") {
+        var li = el("li", "slate-nav-item");
+        li.appendChild(link);
+        list.appendChild(li);
+      } else {
+        list.appendChild(link);
+      }
+    });
+  }
+
+  function injectChrome(manifest) {
+    var navEl = findChrome(manifest.nav_selector, NAV_FALLBACK_SELECTORS);
+    injectLinks(navEl, manifest.nav);
+    var footerEl = findChrome(manifest.footer_selector, FOOTER_FALLBACK_SELECTORS);
+    injectLinks(footerEl, manifest.footer);
+  }
+
   // ── Main ────────────────────────────────────────────────────────────────────
 
   function init() {
@@ -279,21 +324,25 @@
     captureShell();
 
     fetchManifest(function (manifest) {
-      if (!manifest || !manifest.slugs) return;
-      var entry = null;
+      if (!manifest) return;
 
+      injectChrome(manifest);
+
+      if (!manifest.slugs) return;
+      var entry = null;
       for (var i = 0; i < manifest.slugs.length; i++) {
         if (manifest.slugs[i].slug === path) {
           entry = manifest.slugs[i];
           break;
         }
       }
-
       if (!entry) return;
 
       fetchContent(path, function (content) {
         if (!content || !content.content_json) return;
         injectContent(content, !entry.existsOnSite);
+        // Re-inject nav/footer if injectContent rebuilt the body for a new route.
+        injectChrome(manifest);
       });
     });
   }

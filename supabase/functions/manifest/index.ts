@@ -1,8 +1,8 @@
 // Slate /manifest endpoint
 //
 // Public endpoint called by snippet/slate.js with ?site=<snippet_token>.
-// Returns the list of published page+post slugs for that site so the
-// snippet can decide whether to render Slate content for the current URL.
+// Returns the list of published page+post slugs, plus nav/footer
+// inclusion lists, plus optional CSS selector overrides.
 //
 // Auth: snippet_token in the query string. The site row is members-only
 // under RLS, so we look it up with the service role and only expose the
@@ -47,11 +47,11 @@ Deno.serve(async (req: Request) => {
 
   const { data: site } = await supabase
     .from("sites")
-    .select("id")
+    .select("id, nav_selector, footer_selector")
     .eq("snippet_token", token)
     .maybeSingle();
 
-  if (!site) return json({ slugs: [] });
+  if (!site) return json({ slugs: [], nav: [], footer: [] });
 
   // Record the ping so the dashboard can show "Connected" status. Fire-and-forget.
   const referer = req.headers.get("referer") ?? req.headers.get("origin");
@@ -64,7 +64,7 @@ Deno.serve(async (req: Request) => {
   const [pagesRes, postsRes] = await Promise.all([
     supabase
       .from("pages")
-      .select("slug")
+      .select("slug, title, show_in_nav, show_in_footer, nav_label, nav_order")
       .eq("site_id", site.id)
       .eq("status", "published"),
     supabase
@@ -91,5 +91,21 @@ Deno.serve(async (req: Request) => {
     })),
   ];
 
-  return json({ slugs });
+  const nav = (pagesRes.data ?? [])
+    .filter((p) => p.show_in_nav)
+    .sort((a, b) => (a.nav_order ?? 0) - (b.nav_order ?? 0))
+    .map((p) => ({ slug: p.slug, label: p.nav_label ?? p.title }));
+
+  const footer = (pagesRes.data ?? [])
+    .filter((p) => p.show_in_footer)
+    .sort((a, b) => (a.nav_order ?? 0) - (b.nav_order ?? 0))
+    .map((p) => ({ slug: p.slug, label: p.nav_label ?? p.title }));
+
+  return json({
+    slugs,
+    nav,
+    footer,
+    nav_selector: site.nav_selector ?? null,
+    footer_selector: site.footer_selector ?? null,
+  });
 });

@@ -43,7 +43,17 @@ export async function createPage(
 
 export async function updatePage(
   id: string,
-  updates: { title?: string; slug?: string; content_json?: Block[]; meta_description?: string; og_image?: string }
+  updates: {
+    title?: string;
+    slug?: string;
+    content_json?: Block[];
+    meta_description?: string;
+    og_image?: string;
+    show_in_nav?: boolean;
+    show_in_footer?: boolean;
+    nav_label?: string | null;
+    nav_order?: number;
+  }
 ): Promise<Page> {
   const { data, error } = await supabase
     .from("pages")

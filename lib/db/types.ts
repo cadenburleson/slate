@@ -38,6 +38,8 @@ export interface Database {
           header_html: string | null;
           footer_html: string | null;
           stripe_account_id: string | null;
+          nav_selector: string | null;
+          footer_selector: string | null;
           last_seen_at: string | null;
           last_seen_referer: string | null;
           created_at: string;
@@ -53,6 +55,8 @@ export interface Database {
           header_html?: string | null;
           footer_html?: string | null;
           stripe_account_id?: string | null;
+          nav_selector?: string | null;
+          footer_selector?: string | null;
           last_seen_at?: string | null;
           last_seen_referer?: string | null;
           created_at?: string;
@@ -68,6 +72,8 @@ export interface Database {
           header_html?: string | null;
           footer_html?: string | null;
           stripe_account_id?: string | null;
+          nav_selector?: string | null;
+          footer_selector?: string | null;
           last_seen_at?: string | null;
           last_seen_referer?: string | null;
           created_at?: string;
@@ -145,6 +151,10 @@ export interface Database {
           content_json: Block[];
           status: "draft" | "published";
           published_at: string | null;
+          show_in_nav: boolean;
+          show_in_footer: boolean;
+          nav_label: string | null;
+          nav_order: number;
           created_at: string;
           updated_at: string;
         };
@@ -158,6 +168,10 @@ export interface Database {
           content_json?: Block[];
           status?: "draft" | "published";
           published_at?: string | null;
+          show_in_nav?: boolean;
+          show_in_footer?: boolean;
+          nav_label?: string | null;
+          nav_order?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -171,6 +185,10 @@ export interface Database {
           content_json?: Block[];
           status?: "draft" | "published";
           published_at?: string | null;
+          show_in_nav?: boolean;
+          show_in_footer?: boolean;
+          nav_label?: string | null;
+          nav_order?: number;
           created_at?: string;
           updated_at?: string;
         };
