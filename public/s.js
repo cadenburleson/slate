@@ -290,18 +290,29 @@
   }
 
   function injectLinks(container, items) {
-    if (!container || !items || !items.length) return;
-    // Prefer a list inside the container so the new links match existing markup.
+    if (!container) return;
+    // Remove any links Slate injected on a previous load so label changes
+    // and removed pages take effect. Hand-coded links on the host site are
+    // left alone — we only touch elements with data-slate-link.
+    var prior = container.querySelectorAll("[data-slate-link]");
+    for (var i = 0; i < prior.length; i++) prior[i].parentNode.removeChild(prior[i]);
+
+    if (!items || !items.length) return;
     var list = container.querySelector("ul, ol") || container;
     items.forEach(function (item) {
       if (!item.slug) return;
-      // Skip if a link to this slug already exists anywhere in the container.
-      if (container.querySelector('a[href="' + item.slug + '"]')) return;
+      // Skip if the host site already has a hand-coded link to this slug
+      // (e.g. existing About link in the nav). Don't duplicate it.
+      var existing = container.querySelector('a[href="' + item.slug + '"]');
+      if (existing && !existing.hasAttribute("data-slate-link")) return;
+
       var link = el("a", "slate-nav-link");
+      link.setAttribute("data-slate-link", "true");
       link.href = item.slug;
       link.textContent = item.label || item.slug;
       if (list.tagName === "UL" || list.tagName === "OL") {
         var li = el("li", "slate-nav-item");
+        li.setAttribute("data-slate-link", "true");
         li.appendChild(link);
         list.appendChild(li);
       } else {

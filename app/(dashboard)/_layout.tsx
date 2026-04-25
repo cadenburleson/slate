@@ -13,6 +13,7 @@ export default function DashboardLayout() {
     >
       <Stack.Screen name="index" options={{ title: "Sites" }} />
       <Stack.Screen name="add-site" options={{ title: "Add Site", presentation: "modal" }} />
+      <Stack.Screen name="[siteId]" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -122,6 +122,38 @@ export default function PageEditorScreen() {
     ]);
   }
 
+  useEffect(() => {
+    if (!page) return;
+    navigation.setOptions({
+      title: page.title || "Edit Page",
+      headerRight: () => (
+        <View className="flex-row items-center gap-2 pr-2">
+          <Text className="text-xs text-slate-400 mr-1">
+            {saving ? "Saving…" : dirty ? "Unsaved" : "Saved"}
+          </Text>
+          <TouchableOpacity
+            onPress={handlePublishToggle}
+            disabled={saving}
+            className={`px-3 py-1.5 rounded-lg ${
+              page.status === "published" ? "bg-slate-100" : "bg-indigo-600"
+            }`}
+          >
+            <Text
+              className={`text-sm font-medium ${
+                page.status === "published" ? "text-slate-700" : "text-white"
+              }`}
+            >
+              {page.status === "published" ? "Unpublish" : "Publish"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleDelete} className="px-2 py-1.5">
+            <Text className="text-red-400 text-sm">Delete</Text>
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+  }, [navigation, page, saving, dirty]);
+
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -136,31 +168,6 @@ export default function PageEditorScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={90}
     >
-      {/* Toolbar */}
-      <View className="flex-row items-center px-4 py-2 border-b border-slate-100 gap-2">
-        <Text className="text-xs text-slate-400 flex-1">
-          {saving ? "Saving..." : dirty ? "Unsaved" : "Saved"}
-        </Text>
-        <TouchableOpacity
-          onPress={handlePublishToggle}
-          disabled={saving}
-          className={`px-3 py-1.5 rounded-lg ${
-            page?.status === "published" ? "bg-slate-100" : "bg-indigo-600"
-          }`}
-        >
-          <Text
-            className={`text-sm font-medium ${
-              page?.status === "published" ? "text-slate-700" : "text-white"
-            }`}
-          >
-            {page?.status === "published" ? "Unpublish" : "Publish"}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete} className="px-3 py-1.5">
-          <Text className="text-red-400 text-sm">Delete</Text>
-        </TouchableOpacity>
-      </View>
-
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-5 pt-4 pb-32"
