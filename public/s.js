@@ -256,16 +256,12 @@
   // ── API Calls ───────────────────────────────────────────────────────────────
 
   function fetchManifest(cb) {
-    var cached = sessionStorage.getItem(MANIFEST_KEY);
-    if (cached) {
-      try { return cb(JSON.parse(cached)); } catch (e) {}
-    }
+    // No client-side cache — newly-published pages must show up on the
+    // next page load. The /manifest endpoint sets max-age=60 so the
+    // browser's HTTP cache handles repeat-load performance.
     fetch(API + "/manifest?site=" + encodeURIComponent(SITE_ID))
       .then(function (r) { return r.json(); })
-      .then(function (data) {
-        sessionStorage.setItem(MANIFEST_KEY, JSON.stringify(data));
-        cb(data);
-      })
+      .then(cb)
       .catch(function () {});
   }
 
