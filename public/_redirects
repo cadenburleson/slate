@@ -1,0 +1,6 @@
+# Cloudflare Pages SPA fallback
+# Served from dist/_redirects after `expo export -p web`. Static .html files
+# at known routes (e.g. /login, /signup) are served directly first; only
+# unmatched paths (like dynamic /[siteId]/...) fall back to index.html so
+# the client-side router can resolve them.
+/*  /index.html  200

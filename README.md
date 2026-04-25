@@ -186,9 +186,29 @@ Invite collaborators from the **Team** screen inside any site.
 
 ---
 
+## Deploying the web app to Cloudflare Pages
+
+The Expo web target builds a static SPA that drops cleanly onto Cloudflare Pages. Push to `main` triggers a fresh build.
+
+### One-time setup in the Cloudflare dashboard
+
+1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git** → select `cadenburleson/slate`.
+2. Project settings:
+   - **Framework preset:** None
+   - **Build command:** `npx expo export -p web`
+   - **Build output directory:** `dist`
+   - **Root directory:** _(leave blank)_
+3. **Environment variables** (Settings → Environment variables → add for both *Production* and *Preview*):
+   - `EXPO_PUBLIC_SUPABASE_URL` = `https://<your-project-ref>.supabase.co`
+   - `EXPO_PUBLIC_SUPABASE_ANON_KEY` = `<your anon JWT>`
+
+`public/_redirects` ships an SPA fallback so dynamic routes like `/[siteId]/pages` resolve correctly on direct loads and refreshes. `public/_headers` sets long-cache headers for the `/_expo/` and `/assets/` bundles.
+
+---
+
 ## Roadmap
 
-- [ ] Supabase Edge Functions for the snippet API (`/manifest`, `/content`)
+- [x] Supabase Edge Functions for the snippet API (`/manifest`, `/content`)
 - [ ] Accept-invite screen for email invites
 - [ ] Media uploads (image block)
 - [ ] Stripe Connect integration for service pages

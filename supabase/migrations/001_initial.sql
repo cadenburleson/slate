@@ -84,7 +84,10 @@ create table media (
 
 -- ─── Auto-update updated_at ───────────────────────────────────────────────────
 create or replace function update_updated_at()
-returns trigger language plpgsql as $$
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
 begin
   new.updated_at = now();
   return new;
