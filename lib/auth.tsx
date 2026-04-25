@@ -5,8 +5,19 @@ import React, {
   useState,
   type ReactNode,
 } from "react";
+import { Platform } from "react-native";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+
+// Where Supabase should send the user after they click the email
+// confirmation link. On web we read window.location at call time so the
+// same code works in dev (localhost), preview, and production deploys
+// without rebuilding.
+function getEmailRedirectTo(): string | undefined {
+  if (Platform.OS !== "web") return undefined;
+  if (typeof window === "undefined") return undefined;
+  return `${window.location.origin}/callback`;
+}
 
 interface AuthContextValue {
   session: Session | null;
@@ -47,7 +58,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signUp(email: string, password: string) {
-    const { error } = await supabase.auth.signUp({ email, password });
+    const emailRedirectTo = getEmailRedirectTo();
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: emailRedirectTo ? { emailRedirectTo } : undefined,
+    });
     if (error) throw error;
   }
 
