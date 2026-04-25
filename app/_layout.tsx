@@ -3,6 +3,7 @@ import { Slot, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ConfirmHost } from "@/lib/confirm";
 
 function RouteGuard() {
   const { user, loading } = useAuth();
@@ -29,6 +30,7 @@ export default function RootLayout() {
     <GestureHandlerRootView className="flex-1">
       <AuthProvider>
         <RouteGuard />
+        <ConfirmHost />
       </AuthProvider>
     </GestureHandlerRootView>
   );

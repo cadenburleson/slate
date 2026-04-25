@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
   Switch,
   Text,
   TextInput,
@@ -13,6 +14,8 @@ import {
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BlurView } from "expo-blur";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { pages } from "@/lib/db";
 import type { Block, Page } from "@/lib/db";
 import { BlockEditor } from "@/components/BlockEditor";
@@ -215,22 +218,34 @@ export default function PageEditorScreen() {
 }
 
 function GlassHeaderBackground() {
+  const shadowStyle =
+    Platform.OS === "web"
+      ? ({ boxShadow: "0 4px 16px rgba(15, 23, 42, 0.08)" } as any)
+      : {
+          shadowColor: "#000",
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 4 },
+        };
+
+  if (isLiquidGlassAvailable()) {
+    return (
+      <GlassView
+        glassEffectStyle="regular"
+        style={[StyleSheet.absoluteFill, shadowStyle]}
+      />
+    );
+  }
+
   return (
-    <View
+    <BlurView
+      intensity={60}
+      tint="light"
+      experimentalBlurMethod="dimezisBlurView"
       style={[
-        {
-          flex: 1,
-          backgroundColor: "rgba(255,255,255,0.72)",
-          borderBottomWidth: Platform.OS === "web" ? 0 : 1,
-          borderBottomColor: "rgba(15,23,42,0.06)",
-        },
-        Platform.OS === "web"
-          ? ({
-              backdropFilter: "saturate(180%) blur(20px)",
-              WebkitBackdropFilter: "saturate(180%) blur(20px)",
-              boxShadow: "0 4px 16px rgba(15, 23, 42, 0.06)",
-            } as any)
-          : null,
+        StyleSheet.absoluteFill,
+        { backgroundColor: "rgba(255,255,255,0.55)" },
+        shadowStyle,
       ]}
     />
   );
