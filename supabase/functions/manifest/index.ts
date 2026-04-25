@@ -53,6 +53,14 @@ Deno.serve(async (req: Request) => {
 
   if (!site) return json({ slugs: [] });
 
+  // Record the ping so the dashboard can show "Connected" status. Fire-and-forget.
+  const referer = req.headers.get("referer") ?? req.headers.get("origin");
+  supabase
+    .from("sites")
+    .update({ last_seen_at: new Date().toISOString(), last_seen_referer: referer })
+    .eq("id", site.id)
+    .then(() => {});
+
   const [pagesRes, postsRes] = await Promise.all([
     supabase
       .from("pages")

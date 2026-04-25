@@ -38,6 +38,8 @@ export interface Database {
           header_html: string | null;
           footer_html: string | null;
           stripe_account_id: string | null;
+          last_seen_at: string | null;
+          last_seen_referer: string | null;
           created_at: string;
         };
         Insert: {
@@ -51,6 +53,8 @@ export interface Database {
           header_html?: string | null;
           footer_html?: string | null;
           stripe_account_id?: string | null;
+          last_seen_at?: string | null;
+          last_seen_referer?: string | null;
           created_at?: string;
         };
         Update: {
@@ -64,6 +68,8 @@ export interface Database {
           header_html?: string | null;
           footer_html?: string | null;
           stripe_account_id?: string | null;
+          last_seen_at?: string | null;
+          last_seen_referer?: string | null;
           created_at?: string;
         };
         Relationships: [];
