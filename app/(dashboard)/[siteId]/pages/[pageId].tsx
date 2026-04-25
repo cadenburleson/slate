@@ -11,10 +11,12 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { pages } from "@/lib/db";
 import type { Block, Page } from "@/lib/db";
 import { BlockEditor } from "@/components/BlockEditor";
+import { confirm } from "@/lib/confirm";
 
 export default function PageEditorScreen() {
   const { siteId, pageId } = useLocalSearchParams<{
@@ -77,6 +79,14 @@ export default function PageEditorScreen() {
 
   async function handlePublishToggle() {
     if (!page) return;
+    if (page.status === "published") {
+      const ok = await confirm({
+        title: "Unpublish page?",
+        message: "Are you sure? Visitors will no longer see this page.",
+        confirmLabel: "Unpublish",
+      });
+      if (!ok) return;
+    }
     setSaving(true);
     try {
       const updated =
@@ -109,23 +119,28 @@ export default function PageEditorScreen() {
   }
 
   async function handleDelete() {
-    Alert.alert("Delete page", "This cannot be undone.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          await pages.deletePage(pageId);
-          navigation.goBack();
-        },
-      },
-    ]);
+    const ok = await confirm({
+      title: "Delete page?",
+      message: "Are you sure? This cannot be undone.",
+      confirmLabel: "Delete",
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await pages.deletePage(pageId);
+      navigation.goBack();
+    } catch (e: any) {
+      Alert.alert("Error", e.message);
+    }
   }
 
   useEffect(() => {
     if (!page) return;
     navigation.setOptions({
       title: page.title || "Edit Page",
+      headerTransparent: true,
+      headerShadowVisible: false,
+      headerBackground: () => <GlassHeaderBackground />,
       headerRight: () => (
         <View className="flex-row items-center gap-2 pr-2">
           <Text className="text-xs text-slate-400 mr-1">
@@ -154,6 +169,8 @@ export default function PageEditorScreen() {
     });
   }, [navigation, page, saving, dirty]);
 
+  const headerHeight = useHeaderHeight();
+
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -170,7 +187,7 @@ export default function PageEditorScreen() {
     >
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-5 pt-4 pb-32"
+        contentContainerStyle={{ paddingTop: headerHeight + 16, paddingHorizontal: 20, paddingBottom: 128 }}
         keyboardDismissMode="interactive"
       >
         <TextInput
@@ -194,6 +211,28 @@ export default function PageEditorScreen() {
         <BlockEditor blocks={blocks} onChange={handleBlocksChange} />
       </ScrollView>
     </KeyboardAvoidingView>
+  );
+}
+
+function GlassHeaderBackground() {
+  return (
+    <View
+      style={[
+        {
+          flex: 1,
+          backgroundColor: "rgba(255,255,255,0.72)",
+          borderBottomWidth: Platform.OS === "web" ? 0 : 1,
+          borderBottomColor: "rgba(15,23,42,0.06)",
+        },
+        Platform.OS === "web"
+          ? ({
+              backdropFilter: "saturate(180%) blur(20px)",
+              WebkitBackdropFilter: "saturate(180%) blur(20px)",
+              boxShadow: "0 4px 16px rgba(15, 23, 42, 0.06)",
+            } as any)
+          : null,
+      ]}
+    />
   );
 }
 
