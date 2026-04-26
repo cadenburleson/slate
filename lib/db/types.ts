@@ -9,7 +9,14 @@ export type Json =
 export type Block =
   | { id: string; type: "heading"; level: 1 | 2 | 3; text: string }
   | { id: string; type: "paragraph"; text: string }
-  | { id: string; type: "image"; src: string; alt: string; caption: string }
+  | {
+      id: string;
+      type: "image";
+      src: string;
+      alt: string;
+      caption: string;
+      width?: "small" | "medium" | "large" | "full";
+    }
   | { id: string; type: "list"; ordered: boolean; items: string[] }
   | { id: string; type: "quote"; text: string }
   | { id: string; type: "divider" }

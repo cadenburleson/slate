@@ -37,6 +37,27 @@
 
   if (!SITE_ID || SITE_ID === "YOUR_SITE_ID") return;
 
+  // ── Style Injection (one-time, scoped to slate classes) ─────────────────────
+
+  (function injectStyles() {
+    if (document.getElementById("slate-styles")) return;
+    var style = document.createElement("style");
+    style.id = "slate-styles";
+    style.textContent = [
+      ".slate-figure{margin:1.25rem auto;text-align:center;}",
+      ".slate-figure-small{max-width:25%;}",
+      ".slate-figure-medium{max-width:50%;}",
+      ".slate-figure-large{max-width:75%;}",
+      ".slate-figure-full{max-width:100%;}",
+      ".slate-img{width:100%;height:auto;display:block;border-radius:6px;}",
+      ".slate-caption{font-size:0.875rem;color:#64748b;margin-top:0.5rem;font-style:italic;}",
+      "@media (max-width:640px){",
+      ".slate-figure-small,.slate-figure-medium,.slate-figure-large{max-width:100%;}",
+      "}",
+    ].join("");
+    (document.head || document.documentElement).appendChild(style);
+  })();
+
   // ── DOM Helpers ─────────────────────────────────────────────────────────────
 
   function el(tag, className) {
@@ -85,10 +106,12 @@
         return listEl;
       }
       case "image": {
-        var fig = el("figure", "slate-figure");
+        var width = block.width || "full";
+        var fig = el("figure", "slate-figure slate-figure-" + width);
         var img = el("img", "slate-img");
         img.src = block.src || "";
         img.alt = block.alt || "";
+        img.loading = "lazy";
         fig.appendChild(img);
         if (block.caption) {
           var cap = el("figcaption", "slate-caption");

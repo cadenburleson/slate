@@ -211,7 +211,7 @@ export default function PageEditorScreen() {
           />
         )}
 
-        <BlockEditor blocks={blocks} onChange={handleBlocksChange} />
+        <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

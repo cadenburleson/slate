@@ -203,7 +203,7 @@ export default function PostEditorScreen() {
         </View>
 
         <View className="h-px bg-slate-100 mb-4" />
-        <BlockEditor blocks={blocks} onChange={handleBlocksChange} />
+        <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

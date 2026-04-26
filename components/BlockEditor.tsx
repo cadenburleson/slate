@@ -1,6 +1,7 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Alert,
+  ActivityIndicator,
+  Image,
   ScrollView,
   Text,
   TextInput,
@@ -8,6 +9,23 @@ import {
   View,
 } from "react-native";
 import type { Block } from "@/lib/db";
+import { pickImage, uploadImage } from "@/lib/upload";
+
+type ImageBlockType = Extract<Block, { type: "image" }>;
+type ImageWidth = NonNullable<ImageBlockType["width"]>;
+
+const WIDTH_PERCENT: Record<ImageWidth, number> = {
+  small: 25,
+  medium: 50,
+  large: 75,
+  full: 100,
+};
+const WIDTH_LABEL: Record<ImageWidth, string> = {
+  small: "S",
+  medium: "M",
+  large: "L",
+  full: "Full",
+};
 
 function generateId() {
   return Math.random().toString(36).slice(2);
@@ -197,6 +215,132 @@ function ListBlock({
   );
 }
 
+function ImageBlock({
+  block,
+  siteId,
+  onChange,
+  onDelete,
+}: {
+  block: ImageBlockType;
+  siteId: string;
+  onChange: (b: Block) => void;
+  onDelete: () => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+  const width = block.width ?? "full";
+
+  useEffect(() => {
+    if (!block.src) return;
+    Image.getSize(
+      block.src,
+      (w, h) => setAspectRatio(h > 0 ? w / h : 1.5),
+      () => setAspectRatio(1.5)
+    );
+  }, [block.src]);
+
+  async function handlePick() {
+    setError(null);
+    try {
+      const picked = await pickImage();
+      if (!picked) return;
+      setUploading(true);
+      const url = await uploadImage(siteId, picked);
+      onChange({ ...block, src: url });
+    } catch (e: any) {
+      setError(e?.message ?? "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  if (!block.src) {
+    return (
+      <View className="mb-2 bg-slate-50 border border-dashed border-slate-300 rounded-xl p-6 items-center">
+        <TouchableOpacity
+          onPress={handlePick}
+          disabled={uploading}
+          className="bg-indigo-600 px-4 py-2 rounded-lg flex-row items-center gap-2"
+        >
+          {uploading && <ActivityIndicator color="#fff" size="small" />}
+          <Text className="text-white text-sm font-medium">
+            {uploading ? "Uploading…" : "Upload image"}
+          </Text>
+        </TouchableOpacity>
+        {error && (
+          <Text className="text-red-500 text-xs mt-2">{error}</Text>
+        )}
+        <TouchableOpacity onPress={onDelete} className="mt-3">
+          <Text className="text-slate-400 text-xs">Remove block</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View className="mb-3">
+      <View className="flex-row items-center gap-2 mb-2">
+        {(Object.keys(WIDTH_PERCENT) as ImageWidth[]).map((w) => (
+          <TouchableOpacity
+            key={w}
+            onPress={() => onChange({ ...block, width: w })}
+            className={`px-2 py-0.5 rounded ${
+              width === w ? "bg-indigo-100" : "bg-slate-100"
+            }`}
+          >
+            <Text
+              className={`text-xs font-mono ${
+                width === w ? "text-indigo-700" : "text-slate-500"
+              }`}
+            >
+              {WIDTH_LABEL[w]}
+            </Text>
+          </TouchableOpacity>
+        ))}
+        <View className="flex-1" />
+        <TouchableOpacity onPress={handlePick} disabled={uploading} className="p-1">
+          <Text className="text-slate-400 text-xs">
+            {uploading ? "Uploading…" : "Replace"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onDelete} className="p-1">
+          <Text className="text-slate-300 text-base">✕</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View className="items-center">
+        <Image
+          source={{ uri: block.src }}
+          style={{
+            width: `${WIDTH_PERCENT[width]}%`,
+            aspectRatio: aspectRatio ?? 1.5,
+            borderRadius: 8,
+          }}
+          resizeMode="contain"
+        />
+      </View>
+
+      {error && <Text className="text-red-500 text-xs mt-1">{error}</Text>}
+
+      <TextInput
+        className="text-slate-700 text-sm py-1 mt-2 border-b border-slate-100"
+        value={block.alt}
+        onChangeText={(t) => onChange({ ...block, alt: t })}
+        placeholder="Alt text (for screen readers)"
+        placeholderTextColor="#cbd5e1"
+      />
+      <TextInput
+        className="text-slate-500 text-sm italic py-1"
+        value={block.caption}
+        onChangeText={(t) => onChange({ ...block, caption: t })}
+        placeholder="Caption (optional)"
+        placeholderTextColor="#cbd5e1"
+      />
+    </View>
+  );
+}
+
 function DividerBlock({ onDelete }: { onDelete: () => void }) {
   return (
     <View className="mb-2 flex-row items-center gap-3">
@@ -213,6 +357,7 @@ function DividerBlock({ onDelete }: { onDelete: () => void }) {
 const BLOCK_TYPES: { type: BlockType; label: string; icon: string }[] = [
   { type: "paragraph", label: "Paragraph", icon: "¶" },
   { type: "heading", label: "Heading", icon: "H" },
+  { type: "image", label: "Image", icon: "▣" },
   { type: "list", label: "List", icon: "≡" },
   { type: "quote", label: "Quote", icon: '"' },
   { type: "divider", label: "Divider", icon: "—" },
@@ -234,7 +379,7 @@ function defaultBlock(type: BlockType): Block {
     case "divider":
       return { id, type: "divider" };
     case "image":
-      return { id, type: "image", src: "", alt: "", caption: "" };
+      return { id, type: "image", src: "", alt: "", caption: "", width: "full" };
     case "service":
       return {
         id,
@@ -297,11 +442,12 @@ function AddBlockPicker({ onAdd }: { onAdd: (b: Block) => void }) {
 // ─── Main BlockEditor ────────────────────────────────────────────────────────
 
 interface BlockEditorProps {
+  siteId: string;
   blocks: Block[];
   onChange: (blocks: Block[]) => void;
 }
 
-export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
+export function BlockEditor({ siteId, blocks, onChange }: BlockEditorProps) {
   function updateBlock(index: number, block: Block) {
     const next = [...blocks];
     next[index] = block;
@@ -371,12 +517,13 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
         );
       case "image":
         return (
-          <View key={block.id} className="mb-2 bg-slate-50 border border-slate-200 rounded-lg p-4 items-center">
-            <Text className="text-slate-400 text-sm">Image block — upload coming soon</Text>
-            <TouchableOpacity onPress={sharedProps.onDelete} className="mt-2">
-              <Text className="text-red-400 text-xs">Remove</Text>
-            </TouchableOpacity>
-          </View>
+          <ImageBlock
+            key={block.id}
+            block={block}
+            siteId={siteId}
+            onChange={(b) => updateBlock(index, b)}
+            onDelete={sharedProps.onDelete}
+          />
         );
       default:
         return null;
