@@ -1,0 +1,16 @@
+{
+  "rules": [
+    {
+      "allowed": {
+        "origins": [
+          "http://localhost:8090",
+          "http://localhost:19006"
+        ],
+        "methods": ["PUT", "GET"],
+        "headers": ["Content-Type"]
+      },
+      "exposeHeaders": [],
+      "maxAgeSeconds": 3600
+    }
+  ]
+}

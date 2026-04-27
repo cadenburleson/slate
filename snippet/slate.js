@@ -31,9 +31,18 @@
   })();
 
   var API = "https://dmmwptwopitvjeyweqrv.supabase.co/functions/v1";
+  var MEDIA_BASE = "https://pub-c617e497d63d48e380f5a47eb765fb4e.r2.dev"; // Phase 1 default; Phase 2 swap to media.<domain>
+  var WIDTH_PX = { small: 400, medium: 800, large: 1600, full: 1600 };
   var MANIFEST_KEY = "slate_manifest_" + SITE_ID;
   var HEADER_KEY = "slate_header_" + SITE_ID;
   var FOOTER_KEY = "slate_footer_" + SITE_ID;
+
+  function srcFor(value, width) {
+    if (!value) return "";
+    if (value.indexOf("r2:") !== 0) return value;
+    var px = WIDTH_PX[width] || WIDTH_PX.full;
+    return MEDIA_BASE + "/" + value.slice(3) + "-" + px + ".webp";
+  }
 
   if (!SITE_ID || SITE_ID === "YOUR_SITE_ID") return;
 
@@ -109,7 +118,7 @@
         var width = block.width || "full";
         var fig = el("figure", "slate-figure slate-figure-" + width);
         var img = el("img", "slate-img");
-        img.src = block.src || "";
+        img.src = srcFor(block.src, width);
         img.alt = block.alt || "";
         img.loading = "lazy";
         fig.appendChild(img);
@@ -220,7 +229,7 @@
     }
     if (content.og_image) {
       setMeta("meta[property='og:image']", "property", "og:image");
-      document.querySelector("meta[property='og:image']").setAttribute("content", content.og_image);
+      document.querySelector("meta[property='og:image']").setAttribute("content", srcFor(content.og_image, "full"));
     }
   }
 

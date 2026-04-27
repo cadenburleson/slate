@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import type { Block } from "@/lib/db";
 import { pickImage, uploadImage } from "@/lib/upload";
+import { srcFor } from "@/lib/media";
 
 type ImageBlockType = Extract<Block, { type: "image" }>;
 type ImageWidth = NonNullable<ImageBlockType["width"]>;
@@ -234,7 +235,7 @@ function ImageBlock({
   useEffect(() => {
     if (!block.src) return;
     Image.getSize(
-      block.src,
+      srcFor(block.src, "full"),
       (w, h) => setAspectRatio(h > 0 ? w / h : 1.5),
       () => setAspectRatio(1.5)
     );
@@ -311,7 +312,7 @@ function ImageBlock({
 
       <View className="items-center">
         <Image
-          source={{ uri: block.src }}
+          source={{ uri: srcFor(block.src, width) }}
           style={{
             width: `${WIDTH_PERCENT[width]}%`,
             aspectRatio: aspectRatio ?? 1.5,
