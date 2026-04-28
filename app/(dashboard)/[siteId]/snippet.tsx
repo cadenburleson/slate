@@ -69,12 +69,12 @@ export default function SnippetScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-slate-50">
-      <View className="px-5 py-6 max-w-lg w-full mx-auto">
-        <Text className="text-2xl font-bold text-slate-900 mb-2">Install snippet</Text>
-        <Text className="text-slate-500 leading-relaxed mb-6">
-          Paste this snippet into the{" "}
-          <Text className="font-mono text-sm text-slate-700">{"<head>"}</Text>{" "}
+    <ScrollView className="flex-1 bg-paper">
+      <View className="px-8 py-8 max-w-xl w-full mx-auto">
+        <Text className="text-3xl font-serif text-ink mb-3">Install snippet.</Text>
+        <Text className="text-ink-muted leading-relaxed mb-8">
+          Paste this into the{" "}
+          <Text className="font-mono text-sm text-ink">{"<head>"}</Text>{" "}
           of every page on your site. That's it — Slate handles the rest.
         </Text>
 
@@ -86,18 +86,18 @@ export default function SnippetScreen() {
           justConnected={justConnected}
         />
 
-        <View className="bg-slate-900 rounded-xl p-5 mb-4">
-          <Text className="text-green-400 font-mono text-sm leading-relaxed">
+        <View className="bg-ink rounded-lg p-5 mb-4">
+          <Text className="text-paper font-mono text-sm leading-relaxed">
             {snippet}
           </Text>
         </View>
 
         <TouchableOpacity
-          className={`py-3 rounded-xl items-center ${copied ? "bg-green-600" : "bg-indigo-600"}`}
+          className={`py-3 rounded-full items-center ${copied ? "bg-leaf" : "bg-ink"}`}
           onPress={copySnippet}
         >
-          <Text className="text-white font-semibold">
-            {copied ? "Copied!" : "Copy snippet"}
+          <Text className="text-paper text-sm">
+            {copied ? "Copied" : "Copy snippet"}
           </Text>
         </TouchableOpacity>
 
@@ -135,18 +135,18 @@ function ConnectionStatus({
     })();
     const mismatch = refererHost && domain && !refererHost.endsWith(domain);
     return (
-      <View className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4">
+      <View className="border-l-2 border-leaf pl-3 mb-6">
         <View className="flex-row items-center gap-2">
-          <View className="w-2 h-2 rounded-full bg-green-500" />
-          <Text className="text-green-700 font-semibold text-sm">
-            {justConnected ? "Connected!" : "Connected"}
+          <View className="w-1.5 h-1.5 rounded-full bg-leaf" />
+          <Text className="text-ink text-sm">
+            {justConnected ? "Connected" : "Connected"}
           </Text>
           {lastSeenAt && (
-            <Text className="text-green-600 text-xs">· last ping {timeAgo(lastSeenAt)}</Text>
+            <Text className="text-ink-muted text-xs">· last ping {timeAgo(lastSeenAt)}</Text>
           )}
         </View>
         {refererHost && (
-          <Text className="text-green-700 text-xs mt-1">From {refererHost}</Text>
+          <Text className="text-ink-muted text-xs mt-1">From {refererHost}</Text>
         )}
         {mismatch && (
           <Text className="text-amber-700 text-xs mt-1">
@@ -158,13 +158,10 @@ function ConnectionStatus({
   }
 
   return (
-    <View className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4">
-      <View className="flex-row items-center gap-2">
-        <View className="w-2 h-2 rounded-full bg-amber-400" />
-        <Text className="text-amber-800 font-semibold text-sm">Waiting for first ping…</Text>
-      </View>
-      <Text className="text-amber-700 text-xs mt-1 leading-relaxed">
-        Paste the snippet into your site's {"<head>"} and load any page. We'll detect it within seconds.
+    <View className="border-l-2 border-amber-400 pl-3 mb-6">
+      <Text className="text-ink text-sm">Waiting for first ping…</Text>
+      <Text className="text-ink-muted text-xs mt-1 leading-relaxed">
+        Paste the snippet into your site's {"<head>"} and load any page.
       </Text>
     </View>
   );
@@ -172,65 +169,54 @@ function ConnectionStatus({
 
 function NextSteps({ siteId }: { siteId: string }) {
   return (
-    <View className="mt-8">
-      <Text className="font-semibold text-slate-900 mb-1">You're live. What's next?</Text>
-      <Text className="text-slate-500 text-sm mb-4 leading-relaxed">
-        Now that Slate is installed, you can publish content from this dashboard
-        and it'll appear on your site automatically.
+    <View className="mt-12">
+      <Text className="text-xs uppercase tracking-wider text-ink-faint mb-3">
+        What's next
       </Text>
 
       <NextStep
         href={`/(dashboard)/${siteId}/pages/new`}
-        icon="📄"
         title="Create your first page"
         desc="Pages map to URLs on your site (e.g. /about). Drafts stay private."
       />
       <NextStep
         href={`/(dashboard)/${siteId}/posts/new`}
-        icon="✍️"
-        title="Write your first blog post"
+        title="Write your first post"
         desc="Posts live under your blog index, with tags, author, and meta tags."
       />
       <NextStep
         href={`/(dashboard)/${siteId}/team`}
-        icon="👥"
         title="Invite your team"
         desc="Add editors so they can publish without touching code."
       />
 
-      <View className="bg-slate-100 rounded-xl px-4 py-3 mt-4">
-        <Text className="text-slate-700 text-xs font-semibold mb-1">How it works</Text>
-        <Text className="text-slate-500 text-xs leading-relaxed">
-          The snippet checks for matching content on each page load. If the URL
-          matches a published page or post, Slate renders it in place — no rebuild,
-          no deploy. Drafts never appear on your live site.
-        </Text>
-      </View>
+      <Text className="text-xs text-ink-muted mt-8 leading-relaxed">
+        The snippet checks for matching content on each page load. If the URL
+        matches a published page or post, Slate renders it in place — no rebuild,
+        no deploy. Drafts never appear on your live site.
+      </Text>
     </View>
   );
 }
 
 function NextStep({
   href,
-  icon,
   title,
   desc,
 }: {
   href: string;
-  icon: string;
   title: string;
   desc: string;
 }) {
   return (
     <Link href={href as any} asChild>
-      <TouchableOpacity className="bg-white rounded-xl border border-slate-100 px-4 py-3 mb-2 active:opacity-70">
-        <View className="flex-row items-center gap-3">
-          <Text className="text-xl">{icon}</Text>
-          <View className="flex-1">
-            <Text className="font-medium text-slate-900 text-sm">{title}</Text>
-            <Text className="text-slate-400 text-xs mt-0.5">{desc}</Text>
+      <TouchableOpacity className="py-4 border-b border-rule active:opacity-60">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-1 pr-4">
+            <Text className="text-ink">{title}</Text>
+            <Text className="text-ink-muted text-sm mt-0.5">{desc}</Text>
           </View>
-          <Text className="text-slate-300 text-lg">›</Text>
+          <Text className="text-ink-faint">→</Text>
         </View>
       </TouchableOpacity>
     </Link>
@@ -257,12 +243,14 @@ function InstallInstructions() {
     },
   ];
   return (
-    <View className="mt-8">
-      <Text className="font-semibold text-slate-900 mb-4">How to install</Text>
+    <View className="mt-12">
+      <Text className="text-xs uppercase tracking-wider text-ink-faint mb-4">
+        How to install
+      </Text>
       {items.map((item) => (
-        <View key={item.title} className="mb-4">
-          <Text className="font-medium text-slate-800 mb-0.5">{item.title}</Text>
-          <Text className="text-slate-500 text-sm">{item.desc}</Text>
+        <View key={item.title} className="py-4 border-b border-rule">
+          <Text className="text-ink mb-0.5">{item.title}</Text>
+          <Text className="text-ink-muted text-sm">{item.desc}</Text>
         </View>
       ))}
     </View>

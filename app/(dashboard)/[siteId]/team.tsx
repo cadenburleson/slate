@@ -63,16 +63,18 @@ export default function TeamScreen() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-slate-50"
+      className="flex-1 bg-paper"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View className="px-5 pt-6 pb-4 bg-white border-b border-slate-100">
-        <Text className="font-semibold text-slate-900 mb-3">Invite by email</Text>
-        <View className="flex-row gap-2">
+      <View className="px-8 pt-8 pb-6 max-w-xl w-full mx-auto">
+        <Text className="text-xs uppercase tracking-wider text-ink-faint mb-3">
+          Invite by email
+        </Text>
+        <View className="flex-row items-end gap-3">
           <TextInput
-            className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 bg-slate-50"
+            className="flex-1 border-b border-rule pb-2 text-ink text-base"
             placeholder="colleague@example.com"
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#A8A8A8"
             value={inviteEmail}
             onChangeText={setInviteEmail}
             keyboardType="email-address"
@@ -82,59 +84,48 @@ export default function TeamScreen() {
           <TouchableOpacity
             onPress={handleInvite}
             disabled={inviting || !inviteEmail}
-            className="bg-indigo-600 px-4 py-2.5 rounded-xl items-center justify-center"
+            className="bg-ink px-5 py-2 rounded-full items-center justify-center"
           >
             {inviting ? (
               <ActivityIndicator color="white" size="small" />
             ) : (
-              <Text className="text-white font-medium text-sm">Invite</Text>
+              <Text className="text-paper text-sm">Invite</Text>
             )}
           </TouchableOpacity>
         </View>
-        <Text className="text-xs text-slate-400 mt-2">
+        <Text className="text-xs text-ink-faint mt-2">
           They'll get an email to join as an Editor.
         </Text>
       </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color="#6366f1" />
+          <ActivityIndicator color="#191919" />
         </View>
       ) : (
         <FlatList
           data={memberList}
           keyExtractor={(item) => item.user_id ?? item.invited_email ?? ""}
-          contentContainerClassName="px-5 pt-4 pb-8"
+          contentContainerClassName="px-8 pt-6 pb-12 max-w-xl mx-auto w-full"
           ListHeaderComponent={
-            <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            <Text className="text-xs uppercase tracking-wider text-ink-faint mb-2">
               Members ({memberList.length})
             </Text>
           }
           renderItem={({ item }) => (
-            <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-2 flex-row items-center">
-              <View className="w-9 h-9 rounded-full bg-indigo-100 items-center justify-center mr-3">
-                <Text className="text-indigo-600 font-bold text-base uppercase">
-                  {(item.invited_email ?? "?")[0]}
-                </Text>
-              </View>
+            <View className="py-4 border-b border-rule flex-row items-center">
               <View className="flex-1">
-                <Text className="font-medium text-slate-900 text-sm">
+                <Text className="text-ink">
                   {displayName(item)}
                 </Text>
               </View>
-              <View
-                className={`px-2 py-0.5 rounded-full ${
-                  item.accepted_at ? "bg-green-50" : "bg-amber-50"
+              <Text
+                className={`text-xs ${
+                  item.accepted_at ? "text-leaf" : "text-amber-600"
                 }`}
               >
-                <Text
-                  className={`text-xs font-medium ${
-                    item.accepted_at ? "text-green-700" : "text-amber-600"
-                  }`}
-                >
-                  {memberStatus(item)}
-                </Text>
-              </View>
+                {memberStatus(item)}
+              </Text>
             </View>
           )}
         />

@@ -5,25 +5,25 @@ import { useAuth } from "@/lib/auth";
 function NavBar() {
   const { user } = useAuth();
   return (
-    <View className="flex-row items-center justify-between px-6 py-4 border-b border-slate-100">
-      <Text className="text-xl font-bold text-slate-900 tracking-tight">slate</Text>
-      <View className="flex-row items-center gap-3">
+    <View className="flex-row items-center justify-between px-8 py-5 border-b border-rule">
+      <Text className="text-2xl font-serif text-ink tracking-tight">Slate</Text>
+      <View className="flex-row items-center gap-6">
         {user ? (
           <Link href="/(dashboard)" asChild>
-            <TouchableOpacity className="bg-slate-900 px-4 py-2 rounded-lg">
-              <Text className="text-white text-sm font-medium">Dashboard</Text>
+            <TouchableOpacity className="bg-ink px-5 py-2 rounded-full">
+              <Text className="text-paper text-sm">Dashboard</Text>
             </TouchableOpacity>
           </Link>
         ) : (
           <>
             <Link href="/(auth)/login" asChild>
-              <TouchableOpacity className="px-4 py-2">
-                <Text className="text-slate-600 text-sm font-medium">Log in</Text>
+              <TouchableOpacity>
+                <Text className="text-ink text-sm">Sign in</Text>
               </TouchableOpacity>
             </Link>
             <Link href="/(auth)/signup" asChild>
-              <TouchableOpacity className="bg-slate-900 px-4 py-2 rounded-lg">
-                <Text className="text-white text-sm font-medium">Get started</Text>
+              <TouchableOpacity className="bg-ink px-5 py-2 rounded-full">
+                <Text className="text-paper text-sm">Get started</Text>
               </TouchableOpacity>
             </Link>
           </>
@@ -35,37 +35,19 @@ function NavBar() {
 
 function HeroSection() {
   return (
-    <View className="items-center py-20 px-6">
-      <View className="bg-indigo-50 px-3 py-1 rounded-full mb-6">
-        <Text className="text-indigo-600 text-xs font-semibold uppercase tracking-wider">
-          Headless CMS for any website
-        </Text>
-      </View>
-      <Text className="text-4xl font-bold text-slate-900 text-center leading-tight max-w-lg">
-        Edit your site without touching code
+    <View className="items-center pt-24 pb-20 px-8">
+      <Text className="text-5xl font-serif text-ink text-center leading-[1.1] max-w-2xl">
+        Edit your site without touching code.
       </Text>
-      <Text className="mt-4 text-lg text-slate-500 text-center max-w-md leading-relaxed">
-        Add one snippet to your site's header. Then manage pages, blog posts,
-        and service pages from a clean app — on any device.
+      <Text className="mt-6 text-lg text-ink-muted text-center max-w-lg leading-relaxed">
+        One snippet in your header. Then write pages and posts from a clean
+        editor on any device.
       </Text>
-      <View className="flex-row gap-3 mt-8">
-        <Link href="/(auth)/signup" asChild>
-          <TouchableOpacity className="bg-indigo-600 px-6 py-3 rounded-xl">
-            <Text className="text-white font-semibold">Start for free</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
-      <View className="mt-10 bg-slate-900 rounded-xl px-5 py-4 max-w-sm w-full">
-        <Text className="text-slate-400 text-xs font-mono mb-1">Add to your site's {"<head>"}</Text>
-        <Text className="text-green-400 text-xs font-mono leading-relaxed">
-          {"<script"}{"\n"}
-          {"  src=\"https://cdn.slate.app/s.js\""}
-          {"\n"}
-          {"  data-site-id=\"your-id\""}
-          {"\n"}
-          {"</script>"}
-        </Text>
-      </View>
+      <Link href="/(auth)/signup" asChild>
+        <TouchableOpacity className="bg-ink px-7 py-3 rounded-full mt-10">
+          <Text className="text-paper text-sm">Start writing</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
@@ -79,30 +61,30 @@ function StepsSection() {
     },
     {
       num: "02",
-      title: "Edit in Slate",
-      desc: "Create pages and posts in our clean block editor. No plugins, no complexity.",
+      title: "Write in Slate",
+      desc: "Compose pages and posts in a quiet block editor. No plugins, no clutter.",
     },
     {
       num: "03",
       title: "Goes live instantly",
-      desc: "Your content appears on your site automatically. Share access with your team or clients.",
+      desc: "Your content appears on your site automatically. Share access with your team.",
     },
   ];
 
   return (
-    <View className="py-16 px-6 bg-slate-50">
-      <Text className="text-2xl font-bold text-slate-900 text-center mb-10">
+    <View className="py-20 px-8 border-t border-rule">
+      <Text className="text-3xl font-serif text-ink text-center mb-12">
         How it works
       </Text>
-      <View className="gap-6 max-w-lg mx-auto w-full">
+      <View className="gap-10 max-w-xl mx-auto w-full">
         {steps.map((step) => (
-          <View key={step.num} className="flex-row gap-4 items-start">
-            <View className="w-10 h-10 rounded-full bg-indigo-100 items-center justify-center shrink-0">
-              <Text className="text-indigo-600 text-xs font-bold">{step.num}</Text>
-            </View>
+          <View key={step.num} className="flex-row gap-6 items-start">
+            <Text className="text-ink-faint text-sm font-mono pt-1 w-8">
+              {step.num}
+            </Text>
             <View className="flex-1">
-              <Text className="font-semibold text-slate-900 mb-1">{step.title}</Text>
-              <Text className="text-slate-500 text-sm leading-relaxed">{step.desc}</Text>
+              <Text className="text-ink text-lg mb-1">{step.title}</Text>
+              <Text className="text-ink-muted leading-relaxed">{step.desc}</Text>
             </View>
           </View>
         ))}
@@ -114,42 +96,36 @@ function StepsSection() {
 function FeaturesSection() {
   const features = [
     {
-      icon: "📄",
       title: "Pages",
       desc: "Create and edit pages with a flexible block editor. Publish or keep as draft.",
     },
     {
-      icon: "✍️",
-      title: "Blog posts",
-      desc: "Write and manage blog posts with tags, author info, and rich content.",
+      title: "Posts",
+      desc: "Write blog posts with tags, author info, and rich content.",
     },
     {
-      icon: "💳",
-      title: "Service pages",
+      title: "Services",
       desc: "Connect Stripe and create pages where visitors can buy your services directly.",
     },
     {
-      icon: "🌐",
       title: "Any website",
       desc: "Works with WordPress, Webflow, custom code, static sites — anything with a <head>.",
     },
   ];
 
   return (
-    <View className="py-16 px-6">
-      <Text className="text-2xl font-bold text-slate-900 text-center mb-10">
+    <View className="py-20 px-8 border-t border-rule">
+      <Text className="text-3xl font-serif text-ink text-center mb-12">
         Everything you need
       </Text>
-      <View className="flex-row flex-wrap gap-4 justify-center max-w-xl mx-auto">
+      <View className="max-w-2xl mx-auto w-full gap-8">
         {features.map((f) => (
           <View
             key={f.title}
-            className="bg-white border border-slate-100 rounded-xl p-5 w-full"
-            style={{ maxWidth: 280 }}
+            className="border-b border-rule pb-6"
           >
-            <Text className="text-2xl mb-3">{f.icon}</Text>
-            <Text className="font-semibold text-slate-900 mb-1">{f.title}</Text>
-            <Text className="text-slate-500 text-sm leading-relaxed">{f.desc}</Text>
+            <Text className="text-ink text-lg mb-1">{f.title}</Text>
+            <Text className="text-ink-muted leading-relaxed">{f.desc}</Text>
           </View>
         ))}
       </View>
@@ -159,16 +135,16 @@ function FeaturesSection() {
 
 function CtaBanner() {
   return (
-    <View className="bg-indigo-600 py-16 px-6 items-center">
-      <Text className="text-3xl font-bold text-white text-center mb-3">
+    <View className="py-24 px-8 items-center border-t border-rule">
+      <Text className="text-3xl font-serif text-ink text-center mb-4 max-w-md">
         Ready to simplify your site?
       </Text>
-      <Text className="text-indigo-200 text-center mb-8 max-w-sm">
+      <Text className="text-ink-muted text-center mb-8 max-w-sm">
         Get started in minutes. No credit card required.
       </Text>
       <Link href="/(auth)/signup" asChild>
-        <TouchableOpacity className="bg-white px-8 py-3 rounded-xl">
-          <Text className="text-indigo-600 font-bold">Start for free</Text>
+        <TouchableOpacity className="bg-ink px-7 py-3 rounded-full">
+          <Text className="text-paper text-sm">Start for free</Text>
         </TouchableOpacity>
       </Link>
     </View>
@@ -177,10 +153,10 @@ function CtaBanner() {
 
 function Footer() {
   return (
-    <View className="py-8 px-6 border-t border-slate-100 items-center">
-      <Text className="text-slate-900 font-bold mb-2">slate</Text>
-      <Text className="text-slate-400 text-xs">
-        © {new Date().getFullYear()} Slate. Built for the web.
+    <View className="py-10 px-8 border-t border-rule items-center">
+      <Text className="text-ink font-serif text-base mb-2">Slate</Text>
+      <Text className="text-ink-faint text-xs">
+        © {new Date().getFullYear()} Slate
       </Text>
     </View>
   );
@@ -189,19 +165,19 @@ function Footer() {
 export default function LandingPage() {
   if (Platform.OS !== "web") {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-4xl font-bold text-slate-900 mb-2">slate</Text>
-        <Text className="text-slate-500 text-center mb-8">
+      <View className="flex-1 items-center justify-center bg-paper px-8">
+        <Text className="text-5xl font-serif text-ink mb-3">Slate</Text>
+        <Text className="text-ink-muted text-center mb-12">
           Manage your website content from anywhere.
         </Text>
         <Link href="/(auth)/login" asChild>
-          <TouchableOpacity className="bg-indigo-600 px-6 py-3 rounded-xl w-full items-center mb-3">
-            <Text className="text-white font-semibold">Log in</Text>
+          <TouchableOpacity className="bg-ink py-3 rounded-full w-full items-center mb-3">
+            <Text className="text-paper text-sm">Sign in</Text>
           </TouchableOpacity>
         </Link>
         <Link href="/(auth)/signup" asChild>
-          <TouchableOpacity className="border border-slate-200 px-6 py-3 rounded-xl w-full items-center">
-            <Text className="text-slate-700 font-semibold">Create account</Text>
+          <TouchableOpacity className="border border-rule py-3 rounded-full w-full items-center">
+            <Text className="text-ink text-sm">Create account</Text>
           </TouchableOpacity>
         </Link>
       </View>
@@ -209,7 +185,7 @@ export default function LandingPage() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-paper">
       <NavBar />
       <HeroSection />
       <StepsSection />

@@ -14,25 +14,19 @@ function PageRow({ page }: { page: Page }) {
   const { siteId } = useLocalSearchParams<{ siteId: string }>();
   return (
     <Link href={`/(dashboard)/${siteId}/pages/${page.id}`} asChild>
-      <TouchableOpacity className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-3 active:opacity-70">
-        <View className="flex-row items-start justify-between gap-2">
+      <TouchableOpacity className="py-5 border-b border-rule active:opacity-60">
+        <View className="flex-row items-start justify-between gap-3">
           <View className="flex-1">
-            <Text className="font-semibold text-slate-900">{page.title}</Text>
-            <Text className="text-slate-400 text-xs mt-0.5 font-mono">{page.slug}</Text>
+            <Text className="text-ink text-lg font-serif">{page.title}</Text>
+            <Text className="text-ink-faint text-xs mt-1 font-mono">{page.slug}</Text>
           </View>
-          <View
-            className={`px-2 py-0.5 rounded-full ${
-              page.status === "published" ? "bg-green-50" : "bg-slate-100"
+          <Text
+            className={`text-xs ${
+              page.status === "published" ? "text-leaf" : "text-ink-faint"
             }`}
           >
-            <Text
-              className={`text-xs font-medium capitalize ${
-                page.status === "published" ? "text-green-700" : "text-slate-500"
-              }`}
-            >
-              {page.status}
-            </Text>
-          </View>
+            {page.status === "published" ? "Published" : "Draft"}
+          </Text>
         </View>
       </TouchableOpacity>
     </Link>
@@ -61,30 +55,29 @@ export default function PagesListScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator color="#6366f1" />
+      <View className="flex-1 items-center justify-center bg-paper">
+        <ActivityIndicator color="#191919" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-slate-50">
+    <View className="flex-1 bg-paper">
       <FlatList
         data={pageList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PageRow page={item} />}
-        contentContainerClassName="px-5 pt-4 pb-8"
+        contentContainerClassName="px-8 pt-6 pb-12 max-w-2xl mx-auto w-full"
         ListEmptyComponent={
-          <View className="items-center justify-center py-16">
-            <Text className="text-4xl mb-4">📄</Text>
-            <Text className="text-xl font-bold text-slate-900 mb-2">No pages yet</Text>
-            <Text className="text-slate-500 text-center">Create your first page below.</Text>
+          <View className="items-center justify-center py-20">
+            <Text className="text-3xl font-serif text-ink mb-3">No pages yet.</Text>
+            <Text className="text-ink-muted text-center">Create your first page below.</Text>
           </View>
         }
         ListFooterComponent={
           <Link href={`/(dashboard)/${siteId}/pages/new`} asChild>
-            <TouchableOpacity className="bg-indigo-600 rounded-xl py-3 items-center mt-4">
-              <Text className="text-white font-semibold">+ New page</Text>
+            <TouchableOpacity className="bg-ink rounded-full py-3 items-center mt-8">
+              <Text className="text-paper text-sm">New page</Text>
             </TouchableOpacity>
           </Link>
         }

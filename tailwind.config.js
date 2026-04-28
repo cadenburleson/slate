@@ -9,14 +9,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        slate: {
-          brand: "#0F172A",
-          accent: "#6366F1",
-          muted: "#94A3B8",
+        ink: {
+          DEFAULT: "#191919",
+          muted: "#6B6B6B",
+          faint: "#A8A8A8",
         },
+        paper: {
+          DEFAULT: "#FFFFFF",
+          soft: "#FAFAFA",
+        },
+        rule: "#E6E6E6",
+        leaf: "#1A8917",
       },
       fontFamily: {
         sans: ["System"],
+        serif: ["Charter", "Georgia", "Cambria", "Times New Roman", "serif"],
       },
     },
   },

@@ -47,65 +47,59 @@ export default function SettingsScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-slate-50">
-      <View className="px-5 pt-6 pb-8 max-w-lg w-full mx-auto">
-        <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
-          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-            Site info
+    <ScrollView className="flex-1 bg-paper">
+      <View className="px-8 pt-8 pb-12 max-w-xl w-full mx-auto">
+        <Text className="text-xs uppercase tracking-wider text-ink-faint mb-3">
+          Site info
+        </Text>
+        <View className="flex-row justify-between py-3 border-b border-rule">
+          <Text className="text-ink-muted text-sm">Domain</Text>
+          <Text className="text-ink text-sm font-mono">{site?.domain}</Text>
+        </View>
+        <View className="flex-row justify-between py-3 border-b border-rule">
+          <Text className="text-ink-muted text-sm">Platform</Text>
+          <Text className="text-ink text-sm capitalize">
+            {site?.detected_platform ?? "Unknown"}
           </Text>
-          <View className="flex-row justify-between py-2 border-b border-slate-50">
-            <Text className="text-slate-600 text-sm">Domain</Text>
-            <Text className="text-slate-900 text-sm font-mono">{site?.domain}</Text>
-          </View>
-          <View className="flex-row justify-between py-2 border-b border-slate-50">
-            <Text className="text-slate-600 text-sm">Platform</Text>
-            <Text className="text-slate-900 text-sm capitalize">
-              {site?.detected_platform ?? "Unknown"}
-            </Text>
-          </View>
-          <View className="flex-row justify-between py-2">
-            <Text className="text-slate-600 text-sm">Site ID</Text>
-            <Text className="text-slate-900 text-xs font-mono">{site?.snippet_token}</Text>
-          </View>
+        </View>
+        <View className="flex-row justify-between py-3 border-b border-rule">
+          <Text className="text-ink-muted text-sm">Site ID</Text>
+          <Text className="text-ink text-xs font-mono">{site?.snippet_token}</Text>
         </View>
 
         {site && <NavOverridePanel site={site} onChange={setSite} />}
 
-        <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
-          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-            Stripe (coming soon)
-          </Text>
-          <Text className="text-slate-500 text-sm leading-relaxed">
-            Connect your Stripe account to create service pages where visitors can purchase
-            directly on your site.
-          </Text>
-          <TouchableOpacity
-            disabled
-            className="mt-4 border border-slate-200 rounded-xl py-3 items-center opacity-50"
-          >
-            <Text className="text-slate-500 font-medium text-sm">Connect Stripe</Text>
-          </TouchableOpacity>
-        </View>
+        <Text className="text-xs uppercase tracking-wider text-ink-faint mt-12 mb-3">
+          Stripe (coming soon)
+        </Text>
+        <Text className="text-ink-muted text-sm leading-relaxed">
+          Connect your Stripe account to create service pages where visitors can purchase
+          directly on your site.
+        </Text>
+        <TouchableOpacity
+          disabled
+          className="mt-4 border border-rule rounded-full py-3 items-center opacity-50"
+        >
+          <Text className="text-ink-muted text-sm">Connect Stripe</Text>
+        </TouchableOpacity>
 
-        <View className="bg-white rounded-xl border border-red-100 px-5 py-4">
-          <Text className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-3">
-            Danger zone
-          </Text>
-          <Text className="text-slate-500 text-sm mb-4 leading-relaxed">
-            Permanently delete this site and all of its content. This action cannot be undone.
-          </Text>
-          <TouchableOpacity
-            onPress={handleDelete}
-            disabled={deleting}
-            className="bg-red-600 rounded-xl py-3 items-center"
-          >
-            {deleting ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white font-semibold">Delete this site</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <Text className="text-xs uppercase tracking-wider text-red-500 mt-12 mb-3">
+          Danger zone
+        </Text>
+        <Text className="text-ink-muted text-sm mb-4 leading-relaxed">
+          Permanently delete this site and all of its content. This action cannot be undone.
+        </Text>
+        <TouchableOpacity
+          onPress={handleDelete}
+          disabled={deleting}
+          className="border border-red-500 rounded-full py-3 items-center"
+        >
+          {deleting ? (
+            <ActivityIndicator color="#dc2626" />
+          ) : (
+            <Text className="text-red-600 text-sm">Delete this site</Text>
+          )}
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -154,55 +148,55 @@ function NavOverridePanel({
   }
 
   return (
-    <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
+    <View className="mt-12">
       <TouchableOpacity
         onPress={() => setOpen((o) => !o)}
-        className="flex-row items-center justify-between"
+        className="flex-row items-start justify-between py-3 border-b border-rule"
       >
-        <View className="flex-1">
-          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <View className="flex-1 pr-3">
+          <Text className="text-xs uppercase tracking-wider text-ink-faint">
             Nav & footer (advanced)
           </Text>
-          <Text className="text-slate-500 text-xs mt-1 leading-relaxed">
+          <Text className="text-ink-muted text-xs mt-1 leading-relaxed">
             By default Slate auto-detects {"<nav>"} and {"<footer>"}. Override
             here only if your site uses custom markup.
           </Text>
         </View>
-        <Text className="text-slate-400 text-lg ml-2">{open ? "−" : "+"}</Text>
+        <Text className="text-ink-faint text-base">{open ? "−" : "+"}</Text>
       </TouchableOpacity>
 
       {open && (
-        <View className="mt-4">
-          <Text className="text-xs font-medium text-slate-700 mb-1">
+        <View className="mt-5">
+          <Text className="text-xs text-ink-muted mb-1.5 uppercase tracking-wider">
             Nav CSS selector
           </Text>
           <TextInput
-            className="border border-slate-200 rounded-lg px-3 py-2 mb-1 text-sm text-slate-900 bg-slate-50 font-mono"
+            className="border-b border-rule pb-2 mb-1 text-sm text-ink font-mono"
             placeholder="header .menu, #site-nav"
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#A8A8A8"
             value={navSelector}
             onChangeText={handleNav}
             autoCapitalize="none"
             autoCorrect={false}
           />
-          <Text className="text-xs text-slate-400 mb-3">
+          <Text className="text-xs text-ink-faint mb-5">
             Leave blank to auto-detect.
           </Text>
 
-          <Text className="text-xs font-medium text-slate-700 mb-1">
+          <Text className="text-xs text-ink-muted mb-1.5 uppercase tracking-wider">
             Footer CSS selector
           </Text>
           <TextInput
-            className="border border-slate-200 rounded-lg px-3 py-2 mb-1 text-sm text-slate-900 bg-slate-50 font-mono"
+            className="border-b border-rule pb-2 mb-1 text-sm text-ink font-mono"
             placeholder="footer.site-footer"
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#A8A8A8"
             value={footerSelector}
             onChangeText={handleFooter}
             autoCapitalize="none"
             autoCorrect={false}
           />
           {saving && (
-            <Text className="text-xs text-slate-400 mt-1">Saving…</Text>
+            <Text className="text-xs text-ink-faint mt-1">Saving…</Text>
           )}
         </View>
       )}

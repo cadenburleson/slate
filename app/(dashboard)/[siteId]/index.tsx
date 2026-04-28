@@ -4,30 +4,35 @@ import { useEffect, useState } from "react";
 import { sites } from "@/lib/db";
 import type { Site } from "@/lib/db";
 
-function NavCard({
+function NavRow({
   href,
-  icon,
   title,
   subtitle,
 }: {
   href: string;
-  icon: string;
   title: string;
   subtitle: string;
 }) {
   return (
     <Link href={href as any} asChild>
-      <TouchableOpacity className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-3 active:opacity-70">
-        <View className="flex-row items-center gap-4">
-          <Text className="text-2xl">{icon}</Text>
-          <View className="flex-1">
-            <Text className="font-semibold text-slate-900">{title}</Text>
-            <Text className="text-slate-400 text-sm mt-0.5">{subtitle}</Text>
+      <TouchableOpacity className="py-5 border-b border-rule active:opacity-60">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-1 pr-4">
+            <Text className="text-ink text-lg">{title}</Text>
+            <Text className="text-ink-muted text-sm mt-1">{subtitle}</Text>
           </View>
-          <Text className="text-slate-300 text-lg">›</Text>
+          <Text className="text-ink-faint text-base">→</Text>
         </View>
       </TouchableOpacity>
     </Link>
+  );
+}
+
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <Text className="text-xs uppercase tracking-wider text-ink-faint mt-10 mb-2">
+      {label}
+    </Text>
   );
 }
 
@@ -40,46 +45,35 @@ export default function SiteOverviewScreen() {
   }, [siteId]);
 
   return (
-    <ScrollView className="flex-1 bg-slate-50">
-      <View className="px-5 pt-4 pb-2">
-        <Text className="text-xs font-mono text-slate-400">{site?.domain}</Text>
-      </View>
+    <ScrollView className="flex-1 bg-paper">
+      <View className="px-8 pt-6 pb-12 max-w-2xl mx-auto w-full">
+        <Text className="text-3xl font-serif text-ink">{site?.domain}</Text>
 
-      <View className="px-5 pb-4">
-        <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-          Content
-        </Text>
-        <NavCard
+        <SectionLabel label="Content" />
+        <NavRow
           href={`/(dashboard)/${siteId}/pages`}
-          icon="📄"
           title="Pages"
           subtitle="Create and edit pages"
         />
-        <NavCard
+        <NavRow
           href={`/(dashboard)/${siteId}/posts`}
-          icon="✍️"
-          title="Blog Posts"
+          title="Posts"
           subtitle="Write and manage posts"
         />
 
-        <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 mt-4">
-          Setup
-        </Text>
-        <NavCard
+        <SectionLabel label="Setup" />
+        <NavRow
           href={`/(dashboard)/${siteId}/snippet`}
-          icon="🔌"
           title="Snippet"
           subtitle="Get your install code"
         />
-        <NavCard
+        <NavRow
           href={`/(dashboard)/${siteId}/team`}
-          icon="👥"
           title="Team"
           subtitle="Invite collaborators"
         />
-        <NavCard
+        <NavRow
           href={`/(dashboard)/${siteId}/settings`}
-          icon="⚙️"
           title="Settings"
           subtitle="Site config and danger zone"
         />

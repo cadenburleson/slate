@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -16,20 +15,40 @@ type ImageBlockType = Extract<Block, { type: "image" }>;
 type ImageWidth = NonNullable<ImageBlockType["width"]>;
 
 const WIDTH_PERCENT: Record<ImageWidth, number> = {
-  small: 25,
-  medium: 50,
-  large: 75,
+  small: 40,
+  medium: 65,
+  large: 85,
   full: 100,
 };
 const WIDTH_LABEL: Record<ImageWidth, string> = {
-  small: "S",
-  medium: "M",
-  large: "L",
+  small: "Small",
+  medium: "Medium",
+  large: "Large",
   full: "Full",
 };
 
 function generateId() {
   return Math.random().toString(36).slice(2);
+}
+
+// ─── Subtle row of inline controls shown above formattable blocks ───────────
+
+function BlockToolbar({
+  children,
+  onDelete,
+}: {
+  children?: React.ReactNode;
+  onDelete: () => void;
+}) {
+  return (
+    <View className="flex-row items-center mb-2 opacity-60">
+      {children}
+      <View className="flex-1" />
+      <TouchableOpacity onPress={onDelete} className="py-0.5 px-1">
+        <Text className="text-ink-faint text-xs">Remove</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 // ─── Individual Block Components ────────────────────────────────────────────
@@ -46,37 +65,36 @@ function HeadingBlock({
   onAddAfter: () => void;
 }) {
   const sizes: Record<number, string> = {
-    1: "text-3xl font-bold",
-    2: "text-2xl font-bold",
-    3: "text-xl font-semibold",
+    1: "text-4xl font-serif",
+    2: "text-3xl font-serif",
+    3: "text-2xl font-serif",
   };
   return (
-    <View className="mb-2">
-      <View className="flex-row items-center gap-2 mb-1">
-        {[1, 2, 3].map((l) => (
-          <TouchableOpacity
-            key={l}
-            onPress={() => onChange({ ...block, level: l as 1 | 2 | 3 })}
-            className={`px-2 py-0.5 rounded ${block.level === l ? "bg-indigo-100" : "bg-slate-100"}`}
-          >
-            <Text
-              className={`text-xs font-mono ${block.level === l ? "text-indigo-700" : "text-slate-500"}`}
+    <View className="mb-6">
+      <BlockToolbar onDelete={onDelete}>
+        <View className="flex-row items-center gap-4">
+          {[1, 2, 3].map((l) => (
+            <TouchableOpacity
+              key={l}
+              onPress={() => onChange({ ...block, level: l as 1 | 2 | 3 })}
             >
-              H{l}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        <View className="flex-1" />
-        <TouchableOpacity onPress={onDelete} className="p-1">
-          <Text className="text-slate-300 text-base">✕</Text>
-        </TouchableOpacity>
-      </View>
+              <Text
+                className={`text-xs ${
+                  block.level === l ? "text-ink" : "text-ink-faint"
+                }`}
+              >
+                H{l}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </BlockToolbar>
       <TextInput
-        className={`text-slate-900 ${sizes[block.level]} py-1`}
+        className={`text-ink leading-tight ${sizes[block.level]}`}
         value={block.text}
         onChangeText={(t) => onChange({ ...block, text: t })}
         placeholder={`Heading ${block.level}`}
-        placeholderTextColor="#cbd5e1"
+        placeholderTextColor="#C4C4C4"
         multiline
         onSubmitEditing={onAddAfter}
         blurOnSubmit
@@ -89,7 +107,6 @@ function ParagraphBlock({
   block,
   onChange,
   onDelete,
-  onAddAfter,
 }: {
   block: Extract<Block, { type: "paragraph" }>;
   onChange: (b: Block) => void;
@@ -97,20 +114,18 @@ function ParagraphBlock({
   onAddAfter: () => void;
 }) {
   return (
-    <View className="mb-2 group">
-      <View className="flex-row items-start">
-        <TextInput
-          className="flex-1 text-slate-700 text-base leading-relaxed py-1"
-          value={block.text}
-          onChangeText={(t) => onChange({ ...block, text: t })}
-          placeholder="Write something..."
-          placeholderTextColor="#cbd5e1"
-          multiline
-        />
-        <TouchableOpacity onPress={onDelete} className="p-1 mt-1">
-          <Text className="text-slate-200 text-sm">✕</Text>
-        </TouchableOpacity>
-      </View>
+    <View className="mb-6 flex-row items-start gap-2">
+      <TextInput
+        className="flex-1 text-ink text-lg leading-8 font-serif"
+        value={block.text}
+        onChangeText={(t) => onChange({ ...block, text: t })}
+        placeholder="Tell your story…"
+        placeholderTextColor="#C4C4C4"
+        multiline
+      />
+      <TouchableOpacity onPress={onDelete} className="pt-2 px-1 opacity-30">
+        <Text className="text-ink-faint text-xs">×</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -125,19 +140,19 @@ function QuoteBlock({
   onDelete: () => void;
 }) {
   return (
-    <View className="mb-2 flex-row items-start gap-3">
-      <View className="w-1 bg-indigo-400 rounded-full self-stretch" />
-      <TextInput
-        className="flex-1 text-slate-600 italic text-base py-1"
-        value={block.text}
-        onChangeText={(t) => onChange({ ...block, text: t })}
-        placeholder="A great quote..."
-        placeholderTextColor="#cbd5e1"
-        multiline
-      />
-      <TouchableOpacity onPress={onDelete} className="p-1">
-        <Text className="text-slate-200 text-sm">✕</Text>
-      </TouchableOpacity>
+    <View className="mb-6">
+      <BlockToolbar onDelete={onDelete} />
+      <View className="flex-row items-start gap-5 pl-1">
+        <View className="w-[3px] bg-ink rounded-full self-stretch" />
+        <TextInput
+          className="flex-1 text-ink-muted italic text-2xl font-serif leading-relaxed"
+          value={block.text}
+          onChangeText={(t) => onChange({ ...block, text: t })}
+          placeholder="A great quote…"
+          placeholderTextColor="#C4C4C4"
+          multiline
+        />
+      </View>
     </View>
   );
 }
@@ -167,50 +182,52 @@ function ListBlock({
   }
 
   return (
-    <View className="mb-2">
-      <View className="flex-row items-center gap-2 mb-2">
-        <TouchableOpacity
-          onPress={() => onChange({ ...block, ordered: false })}
-          className={`px-2 py-0.5 rounded ${!block.ordered ? "bg-indigo-100" : "bg-slate-100"}`}
-        >
-          <Text className={`text-xs ${!block.ordered ? "text-indigo-700" : "text-slate-500"}`}>
-            • Bullets
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onChange({ ...block, ordered: true })}
-          className={`px-2 py-0.5 rounded ${block.ordered ? "bg-indigo-100" : "bg-slate-100"}`}
-        >
-          <Text className={`text-xs ${block.ordered ? "text-indigo-700" : "text-slate-500"}`}>
-            1. Numbered
-          </Text>
-        </TouchableOpacity>
-        <View className="flex-1" />
-        <TouchableOpacity onPress={onDelete} className="p-1">
-          <Text className="text-slate-200 text-sm">✕</Text>
-        </TouchableOpacity>
-      </View>
+    <View className="mb-6">
+      <BlockToolbar onDelete={onDelete}>
+        <View className="flex-row items-center gap-4">
+          <TouchableOpacity onPress={() => onChange({ ...block, ordered: false })}>
+            <Text
+              className={`text-xs ${
+                !block.ordered ? "text-ink" : "text-ink-faint"
+              }`}
+            >
+              • Bulleted
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onChange({ ...block, ordered: true })}>
+            <Text
+              className={`text-xs ${
+                block.ordered ? "text-ink" : "text-ink-faint"
+              }`}
+            >
+              1. Numbered
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </BlockToolbar>
       {block.items.map((item, i) => (
-        <View key={i} className="flex-row items-center gap-2 mb-1">
-          <Text className="text-slate-400 text-sm w-5 text-right">
+        <View key={i} className="flex-row items-start gap-3 mb-1">
+          <Text className="text-ink-muted text-lg font-serif leading-8 w-6 text-right">
             {block.ordered ? `${i + 1}.` : "•"}
           </Text>
           <TextInput
-            className="flex-1 text-slate-700 text-base py-1"
+            className="flex-1 text-ink text-lg font-serif leading-8"
             value={item}
             onChangeText={(t) => updateItem(i, t)}
             placeholder="List item"
-            placeholderTextColor="#cbd5e1"
+            placeholderTextColor="#C4C4C4"
             onSubmitEditing={addItem}
             blurOnSubmit={false}
           />
-          <TouchableOpacity onPress={() => removeItem(i)} className="p-1">
-            <Text className="text-slate-300 text-xs">✕</Text>
-          </TouchableOpacity>
+          {block.items.length > 1 && (
+            <TouchableOpacity onPress={() => removeItem(i)} className="p-1 opacity-40">
+              <Text className="text-ink-faint text-xs">×</Text>
+            </TouchableOpacity>
+          )}
         </View>
       ))}
-      <TouchableOpacity onPress={addItem} className="mt-1">
-        <Text className="text-slate-400 text-sm">+ Add item</Text>
+      <TouchableOpacity onPress={addItem} className="mt-1 ml-9">
+        <Text className="text-ink-faint text-sm">+ Add item</Text>
       </TouchableOpacity>
     </View>
   );
@@ -258,57 +275,50 @@ function ImageBlock({
 
   if (!block.src) {
     return (
-      <View className="mb-2 bg-slate-50 border border-dashed border-slate-300 rounded-xl p-6 items-center">
+      <View className="mb-6 border-t border-b border-rule py-12 items-center">
         <TouchableOpacity
           onPress={handlePick}
           disabled={uploading}
-          className="bg-indigo-600 px-4 py-2 rounded-lg flex-row items-center gap-2"
+          className="flex-row items-center gap-2 px-4 py-2"
         >
-          {uploading && <ActivityIndicator color="#fff" size="small" />}
-          <Text className="text-white text-sm font-medium">
+          {uploading && <ActivityIndicator color="#191919" size="small" />}
+          <Text className="text-ink text-sm underline">
             {uploading ? "Uploading…" : "Upload image"}
           </Text>
         </TouchableOpacity>
-        {error && (
-          <Text className="text-red-500 text-xs mt-2">{error}</Text>
-        )}
+        {error && <Text className="text-red-500 text-xs mt-2">{error}</Text>}
         <TouchableOpacity onPress={onDelete} className="mt-3">
-          <Text className="text-slate-400 text-xs">Remove block</Text>
+          <Text className="text-ink-faint text-xs">Remove block</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View className="mb-3">
-      <View className="flex-row items-center gap-2 mb-2">
-        {(Object.keys(WIDTH_PERCENT) as ImageWidth[]).map((w) => (
-          <TouchableOpacity
-            key={w}
-            onPress={() => onChange({ ...block, width: w })}
-            className={`px-2 py-0.5 rounded ${
-              width === w ? "bg-indigo-100" : "bg-slate-100"
-            }`}
-          >
-            <Text
-              className={`text-xs font-mono ${
-                width === w ? "text-indigo-700" : "text-slate-500"
-              }`}
+    <View className="mb-8">
+      <BlockToolbar onDelete={onDelete}>
+        <View className="flex-row items-center gap-4">
+          {(Object.keys(WIDTH_PERCENT) as ImageWidth[]).map((w) => (
+            <TouchableOpacity
+              key={w}
+              onPress={() => onChange({ ...block, width: w })}
             >
-              {WIDTH_LABEL[w]}
+              <Text
+                className={`text-xs ${
+                  width === w ? "text-ink" : "text-ink-faint"
+                }`}
+              >
+                {WIDTH_LABEL[w]}
+              </Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity onPress={handlePick} disabled={uploading}>
+            <Text className="text-ink-faint text-xs">
+              {uploading ? "Uploading…" : "Replace"}
             </Text>
           </TouchableOpacity>
-        ))}
-        <View className="flex-1" />
-        <TouchableOpacity onPress={handlePick} disabled={uploading} className="p-1">
-          <Text className="text-slate-400 text-xs">
-            {uploading ? "Uploading…" : "Replace"}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onDelete} className="p-1">
-          <Text className="text-slate-300 text-base">✕</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </BlockToolbar>
 
       <View className="items-center">
         <Image
@@ -316,7 +326,6 @@ function ImageBlock({
           style={{
             width: `${WIDTH_PERCENT[width]}%`,
             aspectRatio: aspectRatio ?? 1.5,
-            borderRadius: 8,
           }}
           resizeMode="contain"
         />
@@ -325,18 +334,18 @@ function ImageBlock({
       {error && <Text className="text-red-500 text-xs mt-1">{error}</Text>}
 
       <TextInput
-        className="text-slate-700 text-sm py-1 mt-2 border-b border-slate-100"
-        value={block.alt}
-        onChangeText={(t) => onChange({ ...block, alt: t })}
-        placeholder="Alt text (for screen readers)"
-        placeholderTextColor="#cbd5e1"
-      />
-      <TextInput
-        className="text-slate-500 text-sm italic py-1"
+        className="text-ink-muted italic text-sm font-serif text-center py-2 mt-3"
         value={block.caption}
         onChangeText={(t) => onChange({ ...block, caption: t })}
-        placeholder="Caption (optional)"
-        placeholderTextColor="#cbd5e1"
+        placeholder="Add a caption (optional)"
+        placeholderTextColor="#C4C4C4"
+      />
+      <TextInput
+        className="text-ink-faint text-xs text-center py-1"
+        value={block.alt}
+        onChangeText={(t) => onChange({ ...block, alt: t })}
+        placeholder="Alt text for screen readers"
+        placeholderTextColor="#C4C4C4"
       />
     </View>
   );
@@ -344,10 +353,10 @@ function ImageBlock({
 
 function DividerBlock({ onDelete }: { onDelete: () => void }) {
   return (
-    <View className="mb-2 flex-row items-center gap-3">
-      <View className="flex-1 h-px bg-slate-200" />
-      <TouchableOpacity onPress={onDelete}>
-        <Text className="text-slate-300 text-xs">✕</Text>
+    <View className="my-12 items-center">
+      <Text className="text-ink-faint tracking-[0.5em] text-sm">* * *</Text>
+      <TouchableOpacity onPress={onDelete} className="mt-2 opacity-40">
+        <Text className="text-ink-faint text-xs">Remove</Text>
       </TouchableOpacity>
     </View>
   );
@@ -355,13 +364,13 @@ function DividerBlock({ onDelete }: { onDelete: () => void }) {
 
 // ─── Add Block Picker ────────────────────────────────────────────────────────
 
-const BLOCK_TYPES: { type: BlockType; label: string; icon: string }[] = [
-  { type: "paragraph", label: "Paragraph", icon: "¶" },
-  { type: "heading", label: "Heading", icon: "H" },
-  { type: "image", label: "Image", icon: "▣" },
-  { type: "list", label: "List", icon: "≡" },
-  { type: "quote", label: "Quote", icon: '"' },
-  { type: "divider", label: "Divider", icon: "—" },
+const BLOCK_TYPES: { type: BlockType; label: string }[] = [
+  { type: "paragraph", label: "Text" },
+  { type: "heading", label: "Heading" },
+  { type: "image", label: "Image" },
+  { type: "list", label: "List" },
+  { type: "quote", label: "Quote" },
+  { type: "divider", label: "Divider" },
 ];
 
 type BlockType = Block["type"];
@@ -403,25 +412,19 @@ function AddBlockPicker({ onAdd }: { onAdd: (b: Block) => void }) {
     return (
       <TouchableOpacity
         onPress={() => setOpen(true)}
-        className="flex-row items-center gap-2 py-3 px-2"
+        className="flex-row items-center gap-3 py-4 active:opacity-60"
       >
-        <View className="w-6 h-6 rounded-full border border-slate-300 items-center justify-center">
-          <Text className="text-slate-400 text-base leading-none">+</Text>
+        <View className="w-7 h-7 rounded-full border border-ink-faint items-center justify-center">
+          <Text className="text-ink-muted text-base leading-none">+</Text>
         </View>
-        <Text className="text-slate-400 text-sm">Add block</Text>
+        <Text className="text-ink-faint text-sm">Add block</Text>
       </TouchableOpacity>
     );
   }
 
   return (
-    <View className="border border-slate-200 rounded-xl bg-white mb-3 overflow-hidden">
-      <View className="flex-row items-center px-4 py-3 border-b border-slate-100">
-        <Text className="flex-1 text-sm font-semibold text-slate-700">Add block</Text>
-        <TouchableOpacity onPress={() => setOpen(false)}>
-          <Text className="text-slate-400">✕</Text>
-        </TouchableOpacity>
-      </View>
-      <View className="flex-row flex-wrap p-3 gap-2">
+    <View className="border-t border-b border-rule py-4 my-2">
+      <View className="flex-row flex-wrap gap-x-6 gap-y-3 items-center">
         {BLOCK_TYPES.map((bt) => (
           <TouchableOpacity
             key={bt.type}
@@ -429,12 +432,14 @@ function AddBlockPicker({ onAdd }: { onAdd: (b: Block) => void }) {
               onAdd(defaultBlock(bt.type));
               setOpen(false);
             }}
-            className="flex-row items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2"
           >
-            <Text className="text-slate-500 font-mono text-sm">{bt.icon}</Text>
-            <Text className="text-slate-700 text-sm">{bt.label}</Text>
+            <Text className="text-ink text-sm">{bt.label}</Text>
           </TouchableOpacity>
         ))}
+        <View className="flex-1" />
+        <TouchableOpacity onPress={() => setOpen(false)}>
+          <Text className="text-ink-faint text-sm">Cancel</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -534,7 +539,9 @@ export function BlockEditor({ siteId, blocks, onChange }: BlockEditorProps) {
   return (
     <View className="flex-1">
       {blocks.length === 0 && (
-        <Text className="text-slate-300 text-base py-2">Start writing...</Text>
+        <Text className="text-ink-faint text-lg font-serif leading-8 py-2">
+          Tell your story…
+        </Text>
       )}
       {blocks.map((block, i) => renderBlock(block, i))}
       <AddBlockPicker onAdd={addBlock} />

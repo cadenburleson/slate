@@ -51,36 +51,40 @@ export default function NewPageScreen() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-paper"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View className="flex-1 px-6 pt-8 max-w-lg w-full mx-auto">
-        <Text className="text-2xl font-bold text-slate-900 mb-1">New page</Text>
-        <Text className="text-slate-500 mb-6">
+      <View className="flex-1 px-8 pt-10 max-w-lg w-full mx-auto">
+        <Text className="text-3xl font-serif text-ink mb-3">New page.</Text>
+        <Text className="text-ink-muted mb-10">
           Give your page a title. You can edit the content after.
         </Text>
 
         {error && (
-          <View className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
+          <View className="border-l-2 border-red-500 pl-3 mb-6">
             <Text className="text-red-600 text-sm">{error}</Text>
           </View>
         )}
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Title</Text>
+        <Text className="text-xs text-ink-muted mb-1.5 uppercase tracking-wider">
+          Title
+        </Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-4 text-slate-900 bg-slate-50"
+          className="border-b border-rule pb-2 mb-6 text-ink text-base"
           placeholder="About us"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#A8A8A8"
           value={title}
           onChangeText={handleTitleChange}
           autoFocus
         />
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Slug</Text>
+        <Text className="text-xs text-ink-muted mb-1.5 uppercase tracking-wider">
+          Slug
+        </Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-6 text-slate-900 bg-slate-50 font-mono"
+          className="border-b border-rule pb-2 mb-10 text-ink text-base font-mono"
           placeholder="/about-us"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#A8A8A8"
           value={slug}
           onChangeText={setSlug}
           autoCapitalize="none"
@@ -88,14 +92,14 @@ export default function NewPageScreen() {
         />
 
         <TouchableOpacity
-          className="bg-indigo-600 py-3 rounded-xl items-center"
+          className="bg-ink py-3 rounded-full items-center"
           onPress={handleCreate}
           disabled={loading || !title || !slug}
         >
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text className="text-white font-semibold">Create & edit</Text>
+            <Text className="text-paper text-sm">Create & edit</Text>
           )}
         </TouchableOpacity>
       </View>

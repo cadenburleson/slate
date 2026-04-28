@@ -14,34 +14,28 @@ function PostRow({ post }: { post: Post }) {
   const { siteId } = useLocalSearchParams<{ siteId: string }>();
   return (
     <Link href={`/(dashboard)/${siteId}/posts/${post.id}`} asChild>
-      <TouchableOpacity className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-3 active:opacity-70">
-        <View className="flex-row items-start justify-between gap-2">
+      <TouchableOpacity className="py-6 border-b border-rule active:opacity-60">
+        <View className="flex-row items-start justify-between gap-3">
           <View className="flex-1">
-            <Text className="font-semibold text-slate-900">{post.title}</Text>
-            <Text className="text-slate-400 text-xs mt-0.5 font-mono">{post.slug}</Text>
+            <Text className="text-ink text-xl font-serif">{post.title}</Text>
+            <Text className="text-ink-faint text-xs mt-1 font-mono">{post.slug}</Text>
             {post.tags.length > 0 && (
-              <View className="flex-row flex-wrap gap-1 mt-1">
+              <View className="flex-row flex-wrap gap-3 mt-2">
                 {post.tags.map((tag) => (
-                  <View key={tag} className="bg-slate-100 px-2 py-0.5 rounded-full">
-                    <Text className="text-slate-500 text-xs">{tag}</Text>
-                  </View>
+                  <Text key={tag} className="text-ink-muted text-xs">
+                    {tag}
+                  </Text>
                 ))}
               </View>
             )}
           </View>
-          <View
-            className={`px-2 py-0.5 rounded-full ${
-              post.status === "published" ? "bg-green-50" : "bg-slate-100"
+          <Text
+            className={`text-xs ${
+              post.status === "published" ? "text-leaf" : "text-ink-faint"
             }`}
           >
-            <Text
-              className={`text-xs font-medium capitalize ${
-                post.status === "published" ? "text-green-700" : "text-slate-500"
-              }`}
-            >
-              {post.status}
-            </Text>
-          </View>
+            {post.status === "published" ? "Published" : "Draft"}
+          </Text>
         </View>
       </TouchableOpacity>
     </Link>
@@ -70,30 +64,29 @@ export default function PostsListScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator color="#6366f1" />
+      <View className="flex-1 items-center justify-center bg-paper">
+        <ActivityIndicator color="#191919" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-slate-50">
+    <View className="flex-1 bg-paper">
       <FlatList
         data={postList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PostRow post={item} />}
-        contentContainerClassName="px-5 pt-4 pb-8"
+        contentContainerClassName="px-8 pt-6 pb-12 max-w-2xl mx-auto w-full"
         ListEmptyComponent={
-          <View className="items-center justify-center py-16">
-            <Text className="text-4xl mb-4">✍️</Text>
-            <Text className="text-xl font-bold text-slate-900 mb-2">No posts yet</Text>
-            <Text className="text-slate-500 text-center">Write your first blog post below.</Text>
+          <View className="items-center justify-center py-20">
+            <Text className="text-3xl font-serif text-ink mb-3">No posts yet.</Text>
+            <Text className="text-ink-muted text-center">Write your first post below.</Text>
           </View>
         }
         ListFooterComponent={
           <Link href={`/(dashboard)/${siteId}/posts/new`} asChild>
-            <TouchableOpacity className="bg-indigo-600 rounded-xl py-3 items-center mt-4">
-              <Text className="text-white font-semibold">+ New post</Text>
+            <TouchableOpacity className="bg-ink rounded-full py-3 items-center mt-8">
+              <Text className="text-paper text-sm">New post</Text>
             </TouchableOpacity>
           </Link>
         }
