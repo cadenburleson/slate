@@ -35,12 +35,12 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-stone-50"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
-        <Text className="text-3xl font-bold text-slate-900 mb-1">Welcome back</Text>
-        <Text className="text-slate-500 mb-8">Log in to your Slate account</Text>
+        <Text className="text-3xl font-bold text-stone-900 mb-1">Welcome back</Text>
+        <Text className="text-stone-500 mb-8">Log in to your Headless account</Text>
 
         {error && (
           <View className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
@@ -48,11 +48,11 @@ export default function LoginScreen() {
           </View>
         )}
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Email</Text>
+        <Text className="text-sm font-medium text-stone-700 mb-1">Email</Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-4 text-slate-900 bg-slate-50"
+          className="border border-stone-200 rounded-xl px-4 py-3 mb-4 text-stone-900 bg-stone-50"
           placeholder="you@example.com"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#a8a29e"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -60,11 +60,11 @@ export default function LoginScreen() {
           autoComplete="email"
         />
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Password</Text>
+        <Text className="text-sm font-medium text-stone-700 mb-1">Password</Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-6 text-slate-900 bg-slate-50"
+          className="border border-stone-200 rounded-xl px-4 py-3 mb-6 text-stone-900 bg-stone-50"
           placeholder="••••••••"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#a8a29e"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -72,7 +72,7 @@ export default function LoginScreen() {
         />
 
         <TouchableOpacity
-          className="bg-indigo-600 py-3 rounded-xl items-center"
+          className="bg-stone-900 py-3 rounded-xl items-center"
           onPress={handleLogin}
           disabled={loading}
         >
@@ -84,10 +84,10 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         <View className="flex-row justify-center mt-6">
-          <Text className="text-slate-500 text-sm">Don't have an account? </Text>
+          <Text className="text-stone-500 text-sm">Don't have an account? </Text>
           <Link href="/(auth)/signup" asChild>
             <TouchableOpacity>
-              <Text className="text-indigo-600 text-sm font-medium">Sign up</Text>
+              <Text className="text-stone-900 text-sm font-medium">Sign up</Text>
             </TouchableOpacity>
           </Link>
         </View>

@@ -40,17 +40,17 @@ export default function SignupScreen() {
 
   if (success) {
     return (
-      <View className="flex-1 bg-white justify-center items-center px-6">
+      <View className="flex-1 bg-stone-50 justify-center items-center px-6">
         <Text className="text-4xl mb-4">📬</Text>
-        <Text className="text-2xl font-bold text-slate-900 mb-2 text-center">
+        <Text className="text-2xl font-bold text-stone-900 mb-2 text-center">
           Check your email
         </Text>
-        <Text className="text-slate-500 text-center max-w-xs leading-relaxed">
+        <Text className="text-stone-500 text-center max-w-xs leading-relaxed">
           We sent a confirmation link to {email}. Click it to activate your account.
         </Text>
         <Link href="/(auth)/login" asChild>
           <TouchableOpacity className="mt-8">
-            <Text className="text-indigo-600 font-medium">Back to login</Text>
+            <Text className="text-stone-900 font-medium">Back to login</Text>
           </TouchableOpacity>
         </Link>
       </View>
@@ -59,12 +59,12 @@ export default function SignupScreen() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-stone-50"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
-        <Text className="text-3xl font-bold text-slate-900 mb-1">Get started</Text>
-        <Text className="text-slate-500 mb-8">Create your free Slate account</Text>
+        <Text className="text-3xl font-bold text-stone-900 mb-1">Get started</Text>
+        <Text className="text-stone-500 mb-8">Create your free Headless account</Text>
 
         {error && (
           <View className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
@@ -72,11 +72,11 @@ export default function SignupScreen() {
           </View>
         )}
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Email</Text>
+        <Text className="text-sm font-medium text-stone-700 mb-1">Email</Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-4 text-slate-900 bg-slate-50"
+          className="border border-stone-200 rounded-xl px-4 py-3 mb-4 text-stone-900 bg-stone-50"
           placeholder="you@example.com"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#a8a29e"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -84,11 +84,11 @@ export default function SignupScreen() {
           autoComplete="email"
         />
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Password</Text>
+        <Text className="text-sm font-medium text-stone-700 mb-1">Password</Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-6 text-slate-900 bg-slate-50"
+          className="border border-stone-200 rounded-xl px-4 py-3 mb-6 text-stone-900 bg-stone-50"
           placeholder="Min. 8 characters"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#a8a29e"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -96,7 +96,7 @@ export default function SignupScreen() {
         />
 
         <TouchableOpacity
-          className="bg-indigo-600 py-3 rounded-xl items-center"
+          className="bg-stone-900 py-3 rounded-xl items-center"
           onPress={handleSignup}
           disabled={loading}
         >
@@ -108,10 +108,10 @@ export default function SignupScreen() {
         </TouchableOpacity>
 
         <View className="flex-row justify-center mt-6">
-          <Text className="text-slate-500 text-sm">Already have an account? </Text>
+          <Text className="text-stone-500 text-sm">Already have an account? </Text>
           <Link href="/(auth)/login" asChild>
             <TouchableOpacity>
-              <Text className="text-indigo-600 text-sm font-medium">Log in</Text>
+              <Text className="text-stone-900 text-sm font-medium">Log in</Text>
             </TouchableOpacity>
           </Link>
         </View>

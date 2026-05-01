@@ -14,16 +14,16 @@ function PostRow({ post }: { post: Post }) {
   const { siteId } = useLocalSearchParams<{ siteId: string }>();
   return (
     <Link href={`/(dashboard)/${siteId}/posts/${post.id}`} asChild>
-      <TouchableOpacity className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-3 active:opacity-70">
+      <TouchableOpacity className="bg-white rounded-xl border border-stone-100 px-5 py-4 mb-3 active:opacity-70">
         <View className="flex-row items-start justify-between gap-2">
           <View className="flex-1">
-            <Text className="font-semibold text-slate-900">{post.title}</Text>
-            <Text className="text-slate-400 text-xs mt-0.5 font-mono">{post.slug}</Text>
+            <Text className="font-semibold text-stone-900">{post.title}</Text>
+            <Text className="text-stone-400 text-xs mt-0.5 font-mono">{post.slug}</Text>
             {post.tags.length > 0 && (
               <View className="flex-row flex-wrap gap-1 mt-1">
                 {post.tags.map((tag) => (
-                  <View key={tag} className="bg-slate-100 px-2 py-0.5 rounded-full">
-                    <Text className="text-slate-500 text-xs">{tag}</Text>
+                  <View key={tag} className="bg-stone-100 px-2 py-0.5 rounded-full">
+                    <Text className="text-stone-500 text-xs">{tag}</Text>
                   </View>
                 ))}
               </View>
@@ -31,12 +31,12 @@ function PostRow({ post }: { post: Post }) {
           </View>
           <View
             className={`px-2 py-0.5 rounded-full ${
-              post.status === "published" ? "bg-green-50" : "bg-slate-100"
+              post.status === "published" ? "bg-green-50" : "bg-stone-100"
             }`}
           >
             <Text
               className={`text-xs font-medium capitalize ${
-                post.status === "published" ? "text-green-700" : "text-slate-500"
+                post.status === "published" ? "text-green-700" : "text-stone-500"
               }`}
             >
               {post.status}
@@ -71,13 +71,13 @@ export default function PostsListScreen() {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator color="#6366f1" />
+        <ActivityIndicator color="#44403c" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-slate-50">
+    <View className="flex-1 bg-stone-50">
       <FlatList
         data={postList}
         keyExtractor={(item) => item.id}
@@ -86,13 +86,13 @@ export default function PostsListScreen() {
         ListEmptyComponent={
           <View className="items-center justify-center py-16">
             <Text className="text-4xl mb-4">✍️</Text>
-            <Text className="text-xl font-bold text-slate-900 mb-2">No posts yet</Text>
-            <Text className="text-slate-500 text-center">Write your first blog post below.</Text>
+            <Text className="text-xl font-bold text-stone-900 mb-2">No posts yet</Text>
+            <Text className="text-stone-500 text-center">Write your first blog post below.</Text>
           </View>
         }
         ListFooterComponent={
           <Link href={`/(dashboard)/${siteId}/posts/new`} asChild>
-            <TouchableOpacity className="bg-indigo-600 rounded-xl py-3 items-center mt-4">
+            <TouchableOpacity className="bg-stone-900 rounded-xl py-3 items-center mt-4">
               <Text className="text-white font-semibold">+ New post</Text>
             </TouchableOpacity>
           </Link>

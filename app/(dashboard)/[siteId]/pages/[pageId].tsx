@@ -18,7 +18,7 @@ import { BlurView } from "expo-blur";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { pages } from "@/lib/db";
 import type { Block, Page } from "@/lib/db";
-import { BlockEditor } from "@/components/BlockEditor";
+import { BlockEditor, WEB_TEXTAREA_RESET, useAutoGrow } from "@/components/BlockEditor";
 import { confirm } from "@/lib/confirm";
 
 export default function PageEditorScreen() {
@@ -146,19 +146,19 @@ export default function PageEditorScreen() {
       headerBackground: () => <GlassHeaderBackground />,
       headerRight: () => (
         <View className="flex-row items-center gap-2 pr-2">
-          <Text className="text-xs text-slate-400 mr-1">
+          <Text className="text-xs text-stone-400 mr-1">
             {saving ? "Saving…" : dirty ? "Unsaved" : "Saved"}
           </Text>
           <TouchableOpacity
             onPress={handlePublishToggle}
             disabled={saving}
             className={`px-3 py-1.5 rounded-lg ${
-              page.status === "published" ? "bg-slate-100" : "bg-indigo-600"
+              page.status === "published" ? "bg-stone-100" : "bg-stone-900"
             }`}
           >
             <Text
               className={`text-sm font-medium ${
-                page.status === "published" ? "text-slate-700" : "text-white"
+                page.status === "published" ? "text-stone-700" : "text-white"
               }`}
             >
               {page.status === "published" ? "Unpublish" : "Publish"}
@@ -177,14 +177,14 @@ export default function PageEditorScreen() {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator color="#6366f1" />
+        <ActivityIndicator color="#44403c" />
       </View>
     );
   }
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-stone-50"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={90}
     >
@@ -193,16 +193,8 @@ export default function PageEditorScreen() {
         contentContainerStyle={{ paddingTop: headerHeight + 16, paddingHorizontal: 20, paddingBottom: 128 }}
         keyboardDismissMode="interactive"
       >
-        <TextInput
-          className="text-3xl font-bold text-slate-900 mb-1 py-1"
-          value={title}
-          onChangeText={handleTitleChange}
-          placeholder="Page title"
-          placeholderTextColor="#cbd5e1"
-          multiline
-          blurOnSubmit
-        />
-        <Text className="text-xs font-mono text-slate-400 mb-4">{page?.slug}</Text>
+        <TitleInput value={title} onChange={handleTitleChange} />
+        <Text className="text-xs font-mono text-stone-400 mb-4">{page?.slug}</Text>
 
         {page && (
           <VisibilityPanel
@@ -214,6 +206,24 @@ export default function PageEditorScreen() {
         <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
       </ScrollView>
     </KeyboardAvoidingView>
+  );
+}
+
+function TitleInput({ value, onChange }: { value: string; onChange: (t: string) => void }) {
+  const { height, onContentSizeChange } = useAutoGrow(48);
+  return (
+    <TextInput
+      className="text-4xl font-bold text-stone-900 mb-1 py-1 leading-tight"
+      style={[{ height }, WEB_TEXTAREA_RESET]}
+      value={value}
+      onChangeText={onChange}
+      onContentSizeChange={onContentSizeChange}
+      placeholder="Page title"
+      placeholderTextColor="#d6d3d1"
+      multiline
+      textAlignVertical="top"
+      blurOnSubmit
+    />
   );
 }
 
@@ -279,24 +289,24 @@ function VisibilityPanel({
   }
 
   return (
-    <View className="bg-slate-50 rounded-xl border border-slate-100 px-4 py-3 mb-6">
-      <Text className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+    <View className="bg-stone-50 rounded-xl border border-stone-100 px-4 py-3 mb-6">
+      <Text className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">
         Show this page in
       </Text>
       <View className="flex-row items-center justify-between py-2">
         <View className="flex-1">
-          <Text className="text-sm font-medium text-slate-800">Main navigation</Text>
-          <Text className="text-xs text-slate-400">Adds a link to your site's nav bar.</Text>
+          <Text className="text-sm font-medium text-stone-800">Main navigation</Text>
+          <Text className="text-xs text-stone-400">Adds a link to your site's nav bar.</Text>
         </View>
         <Switch
           value={page.show_in_nav}
           onValueChange={(v) => onChange({ show_in_nav: v })}
         />
       </View>
-      <View className="flex-row items-center justify-between py-2 border-t border-slate-100">
+      <View className="flex-row items-center justify-between py-2 border-t border-stone-100">
         <View className="flex-1">
-          <Text className="text-sm font-medium text-slate-800">Footer</Text>
-          <Text className="text-xs text-slate-400">Adds a link to your site's footer.</Text>
+          <Text className="text-sm font-medium text-stone-800">Footer</Text>
+          <Text className="text-xs text-stone-400">Adds a link to your site's footer.</Text>
         </View>
         <Switch
           value={page.show_in_footer}
@@ -304,18 +314,18 @@ function VisibilityPanel({
         />
       </View>
       {showLabel && (
-        <View className="border-t border-slate-100 pt-3 mt-1">
-          <Text className="text-xs font-medium text-slate-700 mb-1">Link label (optional)</Text>
+        <View className="border-t border-stone-100 pt-3 mt-1">
+          <Text className="text-xs font-medium text-stone-700 mb-1">Link label (optional)</Text>
           <TextInput
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white"
+            className="border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 bg-white"
             placeholder={page.title}
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#a8a29e"
             value={labelDraft}
             onChangeText={handleLabelChange}
             autoCapitalize="none"
             autoCorrect={false}
           />
-          <Text className="text-xs text-slate-400 mt-1">
+          <Text className="text-xs text-stone-400 mt-1">
             Defaults to the page title. Use a shorter label if your nav is tight.
           </Text>
         </View>

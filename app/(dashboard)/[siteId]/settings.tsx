@@ -47,43 +47,43 @@ export default function SettingsScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-slate-50">
+    <ScrollView className="flex-1 bg-stone-50">
       <View className="px-5 pt-6 pb-8 max-w-lg w-full mx-auto">
-        <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
-          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+        <View className="bg-white rounded-xl border border-stone-100 px-5 py-4 mb-4">
+          <Text className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
             Site info
           </Text>
-          <View className="flex-row justify-between py-2 border-b border-slate-50">
-            <Text className="text-slate-600 text-sm">Domain</Text>
-            <Text className="text-slate-900 text-sm font-mono">{site?.domain}</Text>
+          <View className="flex-row justify-between py-2 border-b border-stone-50">
+            <Text className="text-stone-600 text-sm">Domain</Text>
+            <Text className="text-stone-900 text-sm font-mono">{site?.domain}</Text>
           </View>
-          <View className="flex-row justify-between py-2 border-b border-slate-50">
-            <Text className="text-slate-600 text-sm">Platform</Text>
-            <Text className="text-slate-900 text-sm capitalize">
+          <View className="flex-row justify-between py-2 border-b border-stone-50">
+            <Text className="text-stone-600 text-sm">Platform</Text>
+            <Text className="text-stone-900 text-sm capitalize">
               {site?.detected_platform ?? "Unknown"}
             </Text>
           </View>
           <View className="flex-row justify-between py-2">
-            <Text className="text-slate-600 text-sm">Site ID</Text>
-            <Text className="text-slate-900 text-xs font-mono">{site?.snippet_token}</Text>
+            <Text className="text-stone-600 text-sm">Site ID</Text>
+            <Text className="text-stone-900 text-xs font-mono">{site?.snippet_token}</Text>
           </View>
         </View>
 
         {site && <NavOverridePanel site={site} onChange={setSite} />}
 
-        <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
-          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+        <View className="bg-white rounded-xl border border-stone-100 px-5 py-4 mb-4">
+          <Text className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
             Stripe (coming soon)
           </Text>
-          <Text className="text-slate-500 text-sm leading-relaxed">
+          <Text className="text-stone-500 text-sm leading-relaxed">
             Connect your Stripe account to create service pages where visitors can purchase
             directly on your site.
           </Text>
           <TouchableOpacity
             disabled
-            className="mt-4 border border-slate-200 rounded-xl py-3 items-center opacity-50"
+            className="mt-4 border border-stone-200 rounded-xl py-3 items-center opacity-50"
           >
-            <Text className="text-slate-500 font-medium text-sm">Connect Stripe</Text>
+            <Text className="text-stone-500 font-medium text-sm">Connect Stripe</Text>
           </TouchableOpacity>
         </View>
 
@@ -91,7 +91,7 @@ export default function SettingsScreen() {
           <Text className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-3">
             Danger zone
           </Text>
-          <Text className="text-slate-500 text-sm mb-4 leading-relaxed">
+          <Text className="text-stone-500 text-sm mb-4 leading-relaxed">
             Permanently delete this site and all of its content. This action cannot be undone.
           </Text>
           <TouchableOpacity
@@ -154,55 +154,55 @@ function NavOverridePanel({
   }
 
   return (
-    <View className="bg-white rounded-xl border border-slate-100 px-5 py-4 mb-4">
+    <View className="bg-white rounded-xl border border-stone-100 px-5 py-4 mb-4">
       <TouchableOpacity
         onPress={() => setOpen((o) => !o)}
         className="flex-row items-center justify-between"
       >
         <View className="flex-1">
-          <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <Text className="text-xs font-semibold text-stone-400 uppercase tracking-wider">
             Nav & footer (advanced)
           </Text>
-          <Text className="text-slate-500 text-xs mt-1 leading-relaxed">
-            By default Slate auto-detects {"<nav>"} and {"<footer>"}. Override
+          <Text className="text-stone-500 text-xs mt-1 leading-relaxed">
+            By default Headless auto-detects {"<nav>"} and {"<footer>"}. Override
             here only if your site uses custom markup.
           </Text>
         </View>
-        <Text className="text-slate-400 text-lg ml-2">{open ? "−" : "+"}</Text>
+        <Text className="text-stone-400 text-lg ml-2">{open ? "−" : "+"}</Text>
       </TouchableOpacity>
 
       {open && (
         <View className="mt-4">
-          <Text className="text-xs font-medium text-slate-700 mb-1">
+          <Text className="text-xs font-medium text-stone-700 mb-1">
             Nav CSS selector
           </Text>
           <TextInput
-            className="border border-slate-200 rounded-lg px-3 py-2 mb-1 text-sm text-slate-900 bg-slate-50 font-mono"
+            className="border border-stone-200 rounded-lg px-3 py-2 mb-1 text-sm text-stone-900 bg-stone-50 font-mono"
             placeholder="header .menu, #site-nav"
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#a8a29e"
             value={navSelector}
             onChangeText={handleNav}
             autoCapitalize="none"
             autoCorrect={false}
           />
-          <Text className="text-xs text-slate-400 mb-3">
+          <Text className="text-xs text-stone-400 mb-3">
             Leave blank to auto-detect.
           </Text>
 
-          <Text className="text-xs font-medium text-slate-700 mb-1">
+          <Text className="text-xs font-medium text-stone-700 mb-1">
             Footer CSS selector
           </Text>
           <TextInput
-            className="border border-slate-200 rounded-lg px-3 py-2 mb-1 text-sm text-slate-900 bg-slate-50 font-mono"
+            className="border border-stone-200 rounded-lg px-3 py-2 mb-1 text-sm text-stone-900 bg-stone-50 font-mono"
             placeholder="footer.site-footer"
-            placeholderTextColor="#94a3b8"
+            placeholderTextColor="#a8a29e"
             value={footerSelector}
             onChangeText={handleFooter}
             autoCapitalize="none"
             autoCorrect={false}
           />
           {saving && (
-            <Text className="text-xs text-slate-400 mt-1">Saving…</Text>
+            <Text className="text-xs text-stone-400 mt-1">Saving…</Text>
           )}
         </View>
       )}

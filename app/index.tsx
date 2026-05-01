@@ -1,16 +1,21 @@
-import { Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
 import { useAuth } from "@/lib/auth";
+
+const logo = require("../assets/logo.png");
 
 function NavBar() {
   const { user } = useAuth();
   return (
-    <View className="flex-row items-center justify-between px-6 py-4 border-b border-slate-100">
-      <Text className="text-xl font-bold text-slate-900 tracking-tight">slate</Text>
+    <View className="flex-row items-center justify-between px-6 py-4 border-b border-stone-200">
+      <View className="flex-row items-center gap-2">
+        <Image source={logo} style={{ width: 40, height: 40 }} resizeMode="contain" />
+        <Text className="text-2xl font-bold text-stone-900 tracking-tight">Headless</Text>
+      </View>
       <View className="flex-row items-center gap-3">
         {user ? (
           <Link href="/(dashboard)" asChild>
-            <TouchableOpacity className="bg-slate-900 px-4 py-2 rounded-lg">
+            <TouchableOpacity className="bg-stone-900 px-4 py-2 rounded-lg">
               <Text className="text-white text-sm font-medium">Dashboard</Text>
             </TouchableOpacity>
           </Link>
@@ -18,11 +23,11 @@ function NavBar() {
           <>
             <Link href="/(auth)/login" asChild>
               <TouchableOpacity className="px-4 py-2">
-                <Text className="text-slate-600 text-sm font-medium">Log in</Text>
+                <Text className="text-stone-600 text-sm font-medium">Log in</Text>
               </TouchableOpacity>
             </Link>
             <Link href="/(auth)/signup" asChild>
-              <TouchableOpacity className="bg-slate-900 px-4 py-2 rounded-lg">
+              <TouchableOpacity className="bg-stone-900 px-4 py-2 rounded-lg">
                 <Text className="text-white text-sm font-medium">Get started</Text>
               </TouchableOpacity>
             </Link>
@@ -36,30 +41,31 @@ function NavBar() {
 function HeroSection() {
   return (
     <View className="items-center py-20 px-6">
-      <View className="bg-indigo-50 px-3 py-1 rounded-full mb-6">
-        <Text className="text-indigo-600 text-xs font-semibold uppercase tracking-wider">
+      <Image source={logo} style={{ width: 120, height: 120, marginBottom: 24 }} resizeMode="contain" />
+      <View className="bg-stone-200 px-3 py-1 rounded-full mb-6">
+        <Text className="text-stone-900 text-xs font-semibold uppercase tracking-wider">
           Headless CMS for any website
         </Text>
       </View>
-      <Text className="text-4xl font-bold text-slate-900 text-center leading-tight max-w-lg">
+      <Text className="text-4xl font-bold text-stone-900 text-center leading-tight max-w-lg">
         Edit your site without touching code
       </Text>
-      <Text className="mt-4 text-lg text-slate-500 text-center max-w-md leading-relaxed">
+      <Text className="mt-4 text-lg text-stone-500 text-center max-w-md leading-relaxed">
         Add one snippet to your site's header. Then manage pages, blog posts,
         and service pages from a clean app — on any device.
       </Text>
       <View className="flex-row gap-3 mt-8">
         <Link href="/(auth)/signup" asChild>
-          <TouchableOpacity className="bg-indigo-600 px-6 py-3 rounded-xl">
+          <TouchableOpacity className="bg-stone-900 px-6 py-3 rounded-xl">
             <Text className="text-white font-semibold">Start for free</Text>
           </TouchableOpacity>
         </Link>
       </View>
-      <View className="mt-10 bg-slate-900 rounded-xl px-5 py-4 max-w-sm w-full">
-        <Text className="text-slate-400 text-xs font-mono mb-1">Add to your site's {"<head>"}</Text>
+      <View className="mt-10 bg-stone-900 rounded-xl px-5 py-4 max-w-sm w-full">
+        <Text className="text-stone-400 text-xs font-mono mb-1">Add to your site's {"<head>"}</Text>
         <Text className="text-green-400 text-xs font-mono leading-relaxed">
           {"<script"}{"\n"}
-          {"  src=\"https://cdn.slate.app/s.js\""}
+          {"  src=\"https://cdn.headless.app/s.js\""}
           {"\n"}
           {"  data-site-id=\"your-id\""}
           {"\n"}
@@ -79,7 +85,7 @@ function StepsSection() {
     },
     {
       num: "02",
-      title: "Edit in Slate",
+      title: "Edit in Headless",
       desc: "Create pages and posts in our clean block editor. No plugins, no complexity.",
     },
     {
@@ -90,19 +96,19 @@ function StepsSection() {
   ];
 
   return (
-    <View className="py-16 px-6 bg-slate-50">
-      <Text className="text-2xl font-bold text-slate-900 text-center mb-10">
+    <View className="py-16 px-6 bg-stone-200">
+      <Text className="text-2xl font-bold text-stone-900 text-center mb-10">
         How it works
       </Text>
       <View className="gap-6 max-w-lg mx-auto w-full">
         {steps.map((step) => (
           <View key={step.num} className="flex-row gap-4 items-start">
-            <View className="w-10 h-10 rounded-full bg-indigo-100 items-center justify-center shrink-0">
-              <Text className="text-indigo-600 text-xs font-bold">{step.num}</Text>
+            <View className="w-10 h-10 rounded-full bg-stone-900 items-center justify-center shrink-0">
+              <Text className="text-stone-50 text-xs font-bold">{step.num}</Text>
             </View>
             <View className="flex-1">
-              <Text className="font-semibold text-slate-900 mb-1">{step.title}</Text>
-              <Text className="text-slate-500 text-sm leading-relaxed">{step.desc}</Text>
+              <Text className="font-semibold text-stone-900 mb-1">{step.title}</Text>
+              <Text className="text-stone-500 text-sm leading-relaxed">{step.desc}</Text>
             </View>
           </View>
         ))}
@@ -137,19 +143,19 @@ function FeaturesSection() {
 
   return (
     <View className="py-16 px-6">
-      <Text className="text-2xl font-bold text-slate-900 text-center mb-10">
+      <Text className="text-2xl font-bold text-stone-900 text-center mb-10">
         Everything you need
       </Text>
       <View className="flex-row flex-wrap gap-4 justify-center max-w-xl mx-auto">
         {features.map((f) => (
           <View
             key={f.title}
-            className="bg-white border border-slate-100 rounded-xl p-5 w-full"
+            className="bg-white border border-stone-100 rounded-xl p-5 w-full"
             style={{ maxWidth: 280 }}
           >
             <Text className="text-2xl mb-3">{f.icon}</Text>
-            <Text className="font-semibold text-slate-900 mb-1">{f.title}</Text>
-            <Text className="text-slate-500 text-sm leading-relaxed">{f.desc}</Text>
+            <Text className="font-semibold text-stone-900 mb-1">{f.title}</Text>
+            <Text className="text-stone-500 text-sm leading-relaxed">{f.desc}</Text>
           </View>
         ))}
       </View>
@@ -159,16 +165,16 @@ function FeaturesSection() {
 
 function CtaBanner() {
   return (
-    <View className="bg-indigo-600 py-16 px-6 items-center">
+    <View className="bg-stone-900 py-16 px-6 items-center">
       <Text className="text-3xl font-bold text-white text-center mb-3">
         Ready to simplify your site?
       </Text>
-      <Text className="text-indigo-200 text-center mb-8 max-w-sm">
+      <Text className="text-stone-300 text-center mb-8 max-w-sm">
         Get started in minutes. No credit card required.
       </Text>
       <Link href="/(auth)/signup" asChild>
         <TouchableOpacity className="bg-white px-8 py-3 rounded-xl">
-          <Text className="text-indigo-600 font-bold">Start for free</Text>
+          <Text className="text-stone-900 font-bold">Start for free</Text>
         </TouchableOpacity>
       </Link>
     </View>
@@ -177,10 +183,13 @@ function CtaBanner() {
 
 function Footer() {
   return (
-    <View className="py-8 px-6 border-t border-slate-100 items-center">
-      <Text className="text-slate-900 font-bold mb-2">slate</Text>
-      <Text className="text-slate-400 text-xs">
-        © {new Date().getFullYear()} Slate. Built for the web.
+    <View className="bg-stone-200 py-12 px-6 items-center">
+      <View className="flex-row items-center gap-3 mb-3">
+        <Image source={logo} style={{ width: 64, height: 64 }} resizeMode="contain" />
+        <Text className="text-3xl text-stone-900 font-bold">Headless</Text>
+      </View>
+      <Text className="text-stone-500 text-sm">
+        © {new Date().getFullYear()} Headless. Built for the web.
       </Text>
     </View>
   );
@@ -189,19 +198,20 @@ function Footer() {
 export default function LandingPage() {
   if (Platform.OS !== "web") {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-4xl font-bold text-slate-900 mb-2">slate</Text>
-        <Text className="text-slate-500 text-center mb-8">
+      <View className="flex-1 items-center justify-center bg-stone-50 px-6">
+        <Image source={logo} style={{ width: 96, height: 96, marginBottom: 12 }} resizeMode="contain" />
+        <Text className="text-4xl font-bold text-stone-900 mb-2">Headless</Text>
+        <Text className="text-stone-500 text-center mb-8">
           Manage your website content from anywhere.
         </Text>
         <Link href="/(auth)/login" asChild>
-          <TouchableOpacity className="bg-indigo-600 px-6 py-3 rounded-xl w-full items-center mb-3">
+          <TouchableOpacity className="bg-stone-900 px-6 py-3 rounded-xl w-full items-center mb-3">
             <Text className="text-white font-semibold">Log in</Text>
           </TouchableOpacity>
         </Link>
         <Link href="/(auth)/signup" asChild>
-          <TouchableOpacity className="border border-slate-200 px-6 py-3 rounded-xl w-full items-center">
-            <Text className="text-slate-700 font-semibold">Create account</Text>
+          <TouchableOpacity className="border border-stone-200 px-6 py-3 rounded-xl w-full items-center">
+            <Text className="text-stone-700 font-semibold">Create account</Text>
           </TouchableOpacity>
         </Link>
       </View>
@@ -209,7 +219,7 @@ export default function LandingPage() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-stone-50">
       <NavBar />
       <HeroSection />
       <StepsSection />

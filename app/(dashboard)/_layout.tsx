@@ -4,11 +4,11 @@ export default function DashboardLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: "#ffffff" },
+        headerStyle: { backgroundColor: "#fafaf9" },
         headerShadowVisible: false,
-        headerTitleStyle: { fontWeight: "700", color: "#0f172a" },
+        headerTitleStyle: { fontWeight: "700", color: "#1c1917" },
         headerBackTitle: "Back",
-        contentStyle: { backgroundColor: "#f8fafc" },
+        contentStyle: { backgroundColor: "#fafaf9" },
       }}
     >
       <Stack.Screen name="index" options={{ title: "Sites" }} />

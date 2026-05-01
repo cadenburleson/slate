@@ -19,9 +19,9 @@ export default function CallbackScreen() {
   }, [user, loading]);
 
   return (
-    <View className="flex-1 bg-white items-center justify-center px-6">
+    <View className="flex-1 bg-stone-50 items-center justify-center px-6">
       <ActivityIndicator />
-      <Text className="mt-4 text-slate-600">Confirming your email…</Text>
+      <Text className="mt-4 text-stone-600">Confirming your email…</Text>
     </View>
   );
 }

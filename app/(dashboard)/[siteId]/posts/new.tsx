@@ -51,12 +51,12 @@ export default function NewPostScreen() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-stone-50"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View className="flex-1 px-6 pt-8 max-w-lg w-full mx-auto">
-        <Text className="text-2xl font-bold text-slate-900 mb-1">New post</Text>
-        <Text className="text-slate-500 mb-6">
+        <Text className="text-2xl font-bold text-stone-900 mb-1">New post</Text>
+        <Text className="text-stone-500 mb-6">
           Give your post a title. You can edit content and add tags after.
         </Text>
 
@@ -66,21 +66,21 @@ export default function NewPostScreen() {
           </View>
         )}
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Title</Text>
+        <Text className="text-sm font-medium text-stone-700 mb-1">Title</Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-4 text-slate-900 bg-slate-50"
+          className="border border-stone-200 rounded-xl px-4 py-3 mb-4 text-stone-900 bg-stone-50"
           placeholder="My first blog post"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#a8a29e"
           value={title}
           onChangeText={handleTitleChange}
           autoFocus
         />
 
-        <Text className="text-sm font-medium text-slate-700 mb-1">Slug</Text>
+        <Text className="text-sm font-medium text-stone-700 mb-1">Slug</Text>
         <TextInput
-          className="border border-slate-200 rounded-xl px-4 py-3 mb-6 text-slate-900 bg-slate-50 font-mono"
+          className="border border-stone-200 rounded-xl px-4 py-3 mb-6 text-stone-900 bg-stone-50 font-mono"
           placeholder="/my-first-blog-post"
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#a8a29e"
           value={slug}
           onChangeText={setSlug}
           autoCapitalize="none"
@@ -88,7 +88,7 @@ export default function NewPostScreen() {
         />
 
         <TouchableOpacity
-          className="bg-indigo-600 py-3 rounded-xl items-center"
+          className="bg-stone-900 py-3 rounded-xl items-center"
           onPress={handleCreate}
           disabled={loading || !title || !slug}
         >

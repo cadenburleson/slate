@@ -49,7 +49,7 @@ export default function SnippetScreen() {
   const scriptHost =
     Platform.OS === "web" && typeof window !== "undefined"
       ? window.location.origin
-      : "https://cdn.slate.app";
+      : "https://cdn.headless.app";
   const snippet = site
     ? `<script\n  src="${scriptHost}/s.js"\n  data-site-id="${site.snippet_token}"\n  defer\n></script>`
     : "";
@@ -69,13 +69,13 @@ export default function SnippetScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-slate-50">
+    <ScrollView className="flex-1 bg-stone-50">
       <View className="px-5 py-6 max-w-lg w-full mx-auto">
-        <Text className="text-2xl font-bold text-slate-900 mb-2">Install snippet</Text>
-        <Text className="text-slate-500 leading-relaxed mb-6">
+        <Text className="text-2xl font-bold text-stone-900 mb-2">Install snippet</Text>
+        <Text className="text-stone-500 leading-relaxed mb-6">
           Paste this snippet into the{" "}
-          <Text className="font-mono text-sm text-slate-700">{"<head>"}</Text>{" "}
-          of every page on your site. That's it — Slate handles the rest.
+          <Text className="font-mono text-sm text-stone-700">{"<head>"}</Text>{" "}
+          of every page on your site. That's it — Headless handles the rest.
         </Text>
 
         <ConnectionStatus
@@ -86,14 +86,14 @@ export default function SnippetScreen() {
           justConnected={justConnected}
         />
 
-        <View className="bg-slate-900 rounded-xl p-5 mb-4">
+        <View className="bg-stone-900 rounded-xl p-5 mb-4">
           <Text className="text-green-400 font-mono text-sm leading-relaxed">
             {snippet}
           </Text>
         </View>
 
         <TouchableOpacity
-          className={`py-3 rounded-xl items-center ${copied ? "bg-green-600" : "bg-indigo-600"}`}
+          className={`py-3 rounded-xl items-center ${copied ? "bg-green-600" : "bg-stone-900"}`}
           onPress={copySnippet}
         >
           <Text className="text-white font-semibold">
@@ -173,9 +173,9 @@ function ConnectionStatus({
 function NextSteps({ siteId }: { siteId: string }) {
   return (
     <View className="mt-8">
-      <Text className="font-semibold text-slate-900 mb-1">You're live. What's next?</Text>
-      <Text className="text-slate-500 text-sm mb-4 leading-relaxed">
-        Now that Slate is installed, you can publish content from this dashboard
+      <Text className="font-semibold text-stone-900 mb-1">You're live. What's next?</Text>
+      <Text className="text-stone-500 text-sm mb-4 leading-relaxed">
+        Now that Headless is installed, you can publish content from this dashboard
         and it'll appear on your site automatically.
       </Text>
 
@@ -198,11 +198,11 @@ function NextSteps({ siteId }: { siteId: string }) {
         desc="Add editors so they can publish without touching code."
       />
 
-      <View className="bg-slate-100 rounded-xl px-4 py-3 mt-4">
-        <Text className="text-slate-700 text-xs font-semibold mb-1">How it works</Text>
-        <Text className="text-slate-500 text-xs leading-relaxed">
+      <View className="bg-stone-100 rounded-xl px-4 py-3 mt-4">
+        <Text className="text-stone-700 text-xs font-semibold mb-1">How it works</Text>
+        <Text className="text-stone-500 text-xs leading-relaxed">
           The snippet checks for matching content on each page load. If the URL
-          matches a published page or post, Slate renders it in place — no rebuild,
+          matches a published page or post, Headless renders it in place — no rebuild,
           no deploy. Drafts never appear on your live site.
         </Text>
       </View>
@@ -223,14 +223,14 @@ function NextStep({
 }) {
   return (
     <Link href={href as any} asChild>
-      <TouchableOpacity className="bg-white rounded-xl border border-slate-100 px-4 py-3 mb-2 active:opacity-70">
+      <TouchableOpacity className="bg-white rounded-xl border border-stone-100 px-4 py-3 mb-2 active:opacity-70">
         <View className="flex-row items-center gap-3">
           <Text className="text-xl">{icon}</Text>
           <View className="flex-1">
-            <Text className="font-medium text-slate-900 text-sm">{title}</Text>
-            <Text className="text-slate-400 text-xs mt-0.5">{desc}</Text>
+            <Text className="font-medium text-stone-900 text-sm">{title}</Text>
+            <Text className="text-stone-400 text-xs mt-0.5">{desc}</Text>
           </View>
-          <Text className="text-slate-300 text-lg">›</Text>
+          <Text className="text-stone-300 text-lg">›</Text>
         </View>
       </TouchableOpacity>
     </Link>
@@ -258,11 +258,11 @@ function InstallInstructions() {
   ];
   return (
     <View className="mt-8">
-      <Text className="font-semibold text-slate-900 mb-4">How to install</Text>
+      <Text className="font-semibold text-stone-900 mb-4">How to install</Text>
       {items.map((item) => (
         <View key={item.title} className="mb-4">
-          <Text className="font-medium text-slate-800 mb-0.5">{item.title}</Text>
-          <Text className="text-slate-500 text-sm">{item.desc}</Text>
+          <Text className="font-medium text-stone-800 mb-0.5">{item.title}</Text>
+          <Text className="text-stone-500 text-sm">{item.desc}</Text>
         </View>
       ))}
     </View>

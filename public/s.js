@@ -298,6 +298,65 @@
     return null;
   }
 
+  // Active-state classes commonly used by host themes — strip from cloned
+  // templates so new pages don't inherit "current page" styling.
+  var ACTIVE_CLASS_RE = /\b(active|current|current-menu-item|current-menu-parent|current-page|current-page-item|is-active|selected)\b/g;
+
+  function stripActiveStates(node) {
+    var nodes = [node];
+    if (node.querySelectorAll) {
+      var nested = node.querySelectorAll("*");
+      for (var i = 0; i < nested.length; i++) nodes.push(nested[i]);
+    }
+    for (var j = 0; j < nodes.length; j++) {
+      var n = nodes[j];
+      if (n.className && typeof n.className === "string") {
+        n.className = n.className.replace(ACTIVE_CLASS_RE, "").replace(/\s+/g, " ").trim();
+      }
+      if (n.removeAttribute) n.removeAttribute("aria-current");
+    }
+  }
+
+  // Count how many <a> siblings (excluding Slate-injected ones) share a node's
+  // immediate parent. Used to score template candidates — menu links sit in
+  // a dense group, brand/logo links are usually solo.
+  function siblingAnchorCount(a) {
+    if (!a.parentNode) return 1;
+    var kids = a.parentNode.children || [];
+    var n = 0;
+    for (var i = 0; i < kids.length; i++) {
+      if (kids[i].tagName === "A" && !kids[i].hasAttribute("data-slate-link")) n++;
+    }
+    return n;
+  }
+
+  // Find a host link to clone as a template. Cloning preserves the host's
+  // classes, wrapping <li>, and inline styles so injected links visually
+  // match the rest of the nav/footer. Prefers links from the densest group
+  // (i.e. the actual menu) so we don't clone a logo/brand link by mistake.
+  function findLinkTemplate(container) {
+    var anchors = container.querySelectorAll("a:not([data-slate-link])");
+    if (!anchors.length) return null;
+    var best = null;
+    var bestScore = 0;
+    for (var i = 0; i < anchors.length; i++) {
+      var a = anchors[i];
+      var score = siblingAnchorCount(a);
+      // Prefer larger groups; tie-break to the later anchor so we land at the
+      // end of the menu rather than its first item (often "Home" / "logo").
+      if (score >= bestScore) {
+        best = a;
+        bestScore = score;
+      }
+    }
+    if (!best) return null;
+    var li = best.closest && best.closest("li");
+    if (li && container.contains(li)) {
+      return { node: li, parent: li.parentNode };
+    }
+    return { node: best, parent: best.parentNode };
+  }
+
   function injectLinks(container, items) {
     if (!container) return;
     // Remove any links Slate injected on a previous load so label changes
@@ -307,7 +366,9 @@
     for (var i = 0; i < prior.length; i++) prior[i].parentNode.removeChild(prior[i]);
 
     if (!items || !items.length) return;
-    var list = container.querySelector("ul, ol") || container;
+
+    var template = findLinkTemplate(container);
+
     items.forEach(function (item) {
       if (!item.slug) return;
       // Skip if the host site already has a hand-coded link to this slug
@@ -315,18 +376,26 @@
       var existing = container.querySelector('a[href="' + item.slug + '"]');
       if (existing && !existing.hasAttribute("data-slate-link")) return;
 
-      var link = el("a", "slate-nav-link");
-      link.setAttribute("data-slate-link", "true");
-      link.href = item.slug;
-      link.textContent = item.label || item.slug;
-      if (list.tagName === "UL" || list.tagName === "OL") {
-        var li = el("li", "slate-nav-item");
-        li.setAttribute("data-slate-link", "true");
-        li.appendChild(link);
-        list.appendChild(li);
-      } else {
-        list.appendChild(link);
+      var node, anchor;
+      if (template) {
+        node = template.node.cloneNode(true);
+        stripActiveStates(node);
+        anchor = node.tagName === "A" ? node : node.querySelector("a");
       }
+      if (!anchor) {
+        anchor = el("a", "slate-nav-link");
+        node = anchor;
+      }
+
+      anchor.href = item.slug;
+      while (anchor.firstChild) anchor.removeChild(anchor.firstChild);
+      anchor.appendChild(text(item.label || item.slug));
+
+      node.setAttribute("data-slate-link", "true");
+      if (anchor !== node) anchor.setAttribute("data-slate-link", "true");
+
+      var dest = template ? template.parent : (container.querySelector("ul, ol") || container);
+      dest.appendChild(node);
     });
   }
 
