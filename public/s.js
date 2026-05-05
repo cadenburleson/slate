@@ -406,32 +406,108 @@
     injectLinks(footerEl, manifest.footer);
   }
 
+  // ── Manifest cache (stale-while-revalidate) ─────────────────────────────────
+
+  function readCachedManifest() {
+    try {
+      var raw = localStorage.getItem(MANIFEST_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeCachedManifest(manifest) {
+    try {
+      if (manifest) localStorage.setItem(MANIFEST_KEY, JSON.stringify(manifest));
+    } catch (e) {}
+  }
+
+  function manifestEntryFor(manifest, path) {
+    if (!manifest || !manifest.slugs) return null;
+    for (var i = 0; i < manifest.slugs.length; i++) {
+      if (manifest.slugs[i].slug === path) return manifest.slugs[i];
+    }
+    return null;
+  }
+
+  // Preconnect to the Slate API origin so the manifest/content fetches skip
+  // the TLS handshake on first load. Cheap and safe to add.
+  function preconnectApi() {
+    try {
+      if (document.head.querySelector("link[data-slate-preconnect]")) return;
+      var link = document.createElement("link");
+      link.rel = "preconnect";
+      link.href = new URL(API).origin;
+      link.setAttribute("crossorigin", "");
+      link.setAttribute("data-slate-preconnect", "true");
+      document.head.appendChild(link);
+    } catch (e) {}
+  }
+
   // ── Main ────────────────────────────────────────────────────────────────────
 
   function init() {
+    preconnectApi();
     var path = window.location.pathname;
     captureShell();
 
-    fetchManifest(function (manifest) {
-      if (!manifest) return;
+    // Read the cached manifest synchronously. On repeat visits this lets us
+    // (a) inject nav/footer links instantly without waiting for the network,
+    // and (b) hide the host's body on Slate routes so the user doesn't see
+    // a 404 / wrong-content flash before content swaps in.
+    var cached = readCachedManifest();
+    var cachedEntry = manifestEntryFor(cached, path);
+    var hidShell = false;
+    var contentSwapped = false;
 
+    if (cached) {
+      injectChrome(cached);
+      if (cachedEntry) {
+        document.documentElement.style.visibility = "hidden";
+        hidShell = true;
+        // Start the content fetch immediately, in parallel with the manifest
+        // refresh below. On warm cache this brings page-swap down to a single
+        // round trip instead of manifest-then-content.
+        fetchContent(path, function (content) {
+          if (contentSwapped) return;
+          if (!content || !content.content_json) return;
+          contentSwapped = true;
+          injectContent(content, !cachedEntry.existsOnSite);
+          injectChrome(cached);
+          document.documentElement.style.visibility = "";
+        });
+      }
+    }
+
+    fetchManifest(function (manifest) {
+      if (!manifest) {
+        if (hidShell && !contentSwapped) document.documentElement.style.visibility = "";
+        return;
+      }
+      writeCachedManifest(manifest);
       injectChrome(manifest);
 
-      if (!manifest.slugs) return;
-      var entry = null;
-      for (var i = 0; i < manifest.slugs.length; i++) {
-        if (manifest.slugs[i].slug === path) {
-          entry = manifest.slugs[i];
-          break;
-        }
+      var entry = manifestEntryFor(manifest, path);
+      if (!entry) {
+        // Confirmed not a Slate route — restore the host page (e.g. real 404).
+        if (hidShell && !contentSwapped) document.documentElement.style.visibility = "";
+        return;
       }
-      if (!entry) return;
+
+      if (contentSwapped) return; // already swapped via cache pre-fetch
 
       fetchContent(path, function (content) {
-        if (!content || !content.content_json) return;
+        if (!content || !content.content_json) {
+          if (hidShell) document.documentElement.style.visibility = "";
+          return;
+        }
+        contentSwapped = true;
         injectContent(content, !entry.existsOnSite);
-        // Re-inject nav/footer if injectContent rebuilt the body for a new route.
         injectChrome(manifest);
+        document.documentElement.style.visibility = "";
       });
     });
   }
