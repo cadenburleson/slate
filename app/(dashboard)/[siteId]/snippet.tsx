@@ -50,8 +50,12 @@ export default function SnippetScreen() {
     Platform.OS === "web" && typeof window !== "undefined"
       ? window.location.origin
       : "https://cdn.headless.app";
+  // The second tag is a tiny synchronous shim that reads the cached manifest
+  // and hides the body for known Headless routes before paint, so users don't
+  // see a 404 / wrong-page flash on click.
+  const SHIM = `<script>(function(){try{var s=document.querySelector("script[data-site-id]");var t=s&&s.getAttribute("data-site-id");if(!t)return;var r=localStorage.getItem("slate_manifest_"+t);if(!r)return;var m=JSON.parse(r);if(!m||!m.slugs)return;var p=location.pathname;for(var i=0;i<m.slugs.length;i++)if(m.slugs[i].slug===p){document.documentElement.style.visibility="hidden";return}}catch(e){}})()</script>`;
   const snippet = site
-    ? `<script\n  src="${scriptHost}/s.js"\n  data-site-id="${site.snippet_token}"\n  defer\n></script>`
+    ? `<script src="${scriptHost}/s.js" data-site-id="${site.snippet_token}" defer></script>\n${SHIM}`
     : "";
 
   const isConnected =

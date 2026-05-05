@@ -65,11 +65,10 @@ function HeroSection() {
         <Text className="text-stone-400 text-xs font-mono mb-1">Add to your site's {"<head>"}</Text>
         <Text className="text-green-400 text-xs font-mono leading-relaxed">
           {"<script"}{"\n"}
-          {"  src=\"https://cdn.headless.app/s.js\""}
-          {"\n"}
-          {"  data-site-id=\"your-id\""}
-          {"\n"}
-          {"</script>"}
+          {"  src=\"https://cdn.headless.app/s.js\""}{"\n"}
+          {"  data-site-id=\"your-id\" defer"}{"\n"}
+          {"></script>"}{"\n"}
+          {"<script>/* fast-cache shim */</script>"}
         </Text>
       </View>
     </View>

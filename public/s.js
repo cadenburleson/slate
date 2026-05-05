@@ -454,20 +454,32 @@
     var path = window.location.pathname;
     captureShell();
 
+    // The optional inline shim (recommended in the install snippet) may have
+    // already hidden the document if it found this path in the cached manifest.
+    // Track that so we know when to restore visibility ourselves.
+    var bodyHidden = document.documentElement.style.visibility === "hidden";
+    function showBody() {
+      if (bodyHidden) {
+        document.documentElement.style.visibility = "";
+        bodyHidden = false;
+      }
+    }
+
     // Read the cached manifest synchronously. On repeat visits this lets us
     // (a) inject nav/footer links instantly without waiting for the network,
     // and (b) hide the host's body on Slate routes so the user doesn't see
     // a 404 / wrong-content flash before content swaps in.
     var cached = readCachedManifest();
     var cachedEntry = manifestEntryFor(cached, path);
-    var hidShell = false;
     var contentSwapped = false;
 
     if (cached) {
       injectChrome(cached);
       if (cachedEntry) {
-        document.documentElement.style.visibility = "hidden";
-        hidShell = true;
+        if (!bodyHidden) {
+          document.documentElement.style.visibility = "hidden";
+          bodyHidden = true;
+        }
         // Start the content fetch immediately, in parallel with the manifest
         // refresh below. On warm cache this brings page-swap down to a single
         // round trip instead of manifest-then-content.
@@ -477,14 +489,21 @@
           contentSwapped = true;
           injectContent(content, !cachedEntry.existsOnSite);
           injectChrome(cached);
-          document.documentElement.style.visibility = "";
+          showBody();
         });
+      } else if (bodyHidden) {
+        // Cache says current path is NOT a Slate route — shim was wrong (or
+        // its data is stale). Restore visibility immediately.
+        showBody();
       }
+    } else if (bodyHidden) {
+      // Shim hid the body but we have no cache to confirm — restore.
+      showBody();
     }
 
     fetchManifest(function (manifest) {
       if (!manifest) {
-        if (hidShell && !contentSwapped) document.documentElement.style.visibility = "";
+        if (!contentSwapped) showBody();
         return;
       }
       writeCachedManifest(manifest);
@@ -493,7 +512,7 @@
       var entry = manifestEntryFor(manifest, path);
       if (!entry) {
         // Confirmed not a Slate route — restore the host page (e.g. real 404).
-        if (hidShell && !contentSwapped) document.documentElement.style.visibility = "";
+        if (!contentSwapped) showBody();
         return;
       }
 
@@ -501,13 +520,13 @@
 
       fetchContent(path, function (content) {
         if (!content || !content.content_json) {
-          if (hidShell) document.documentElement.style.visibility = "";
+          showBody();
           return;
         }
         contentSwapped = true;
         injectContent(content, !entry.existsOnSite);
         injectChrome(manifest);
-        document.documentElement.style.visibility = "";
+        showBody();
       });
     });
   }
