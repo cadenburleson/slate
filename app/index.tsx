@@ -68,13 +68,21 @@ function HeroSection() {
         </Link>
       </View>
       <View className="mt-10 bg-stone-900 rounded-xl px-5 py-4 max-w-sm w-full">
-        <Text className="text-stone-400 text-xs font-mono mb-1">Add to your site's {"<head>"}</Text>
+        <View className="flex-row items-center justify-between mb-2">
+          <Text className="text-stone-400 text-xs font-mono">Your {"<head>"} will look like</Text>
+          <Text className="text-stone-500 text-[10px] uppercase tracking-wider">Example</Text>
+        </View>
         <Text className="text-green-400 text-xs font-mono leading-relaxed">
           {"<script"}{"\n"}
-          {"  src=\"https://cdn.headless.app/s.js\""}{"\n"}
-          {"  data-site-id=\"your-id\" defer"}{"\n"}
+          {"  src=\"https://byheadless.com/s.js\""}{"\n"}
+          {"  data-site-id=\"YOUR_TOKEN\" defer"}{"\n"}
           {"></script>"}{"\n"}
           {"<script>/* fast-cache shim */</script>"}
+        </Text>
+        <Text className="text-stone-500 text-xs mt-3 leading-relaxed">
+          You'll get your{" "}
+          <Text className="font-mono text-stone-400">YOUR_TOKEN</Text>{" "}
+          after creating your account — every site has its own.
         </Text>
       </View>
     </View>
