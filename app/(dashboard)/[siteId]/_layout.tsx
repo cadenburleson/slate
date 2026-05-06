@@ -1,4 +1,6 @@
 import { Stack } from "expo-router";
+import { Text, View } from "react-native";
+import Logo from "@/components/Logo";
 
 export default function SiteLayout() {
   return (
@@ -6,7 +8,14 @@ export default function SiteLayout() {
       screenOptions={{
         headerStyle: { backgroundColor: "#fafaf9" },
         headerShadowVisible: false,
-        headerTitleStyle: { fontWeight: "700", color: "#1c1917" },
+        headerTitle: ({ children }) => (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Logo width={22} height={22} />
+            <Text style={{ fontWeight: "700", color: "#1c1917", fontSize: 17 }}>
+              {children}
+            </Text>
+          </View>
+        ),
         headerBackTitle: "Sites",
         contentStyle: { backgroundColor: "#fafaf9" },
       }}
