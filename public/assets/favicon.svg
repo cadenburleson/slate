@@ -1,11 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 627 627" preserveAspectRatio="xMidYMid meet">
-<style>
-path { fill: #1c1917; }
-@media (prefers-color-scheme: dark) {
-  path { fill: #fafaf9; }
-}
-</style>
-<g transform="translate(0,627) scale(0.1,-0.1)" stroke="none">
+<rect width="627" height="627" rx="96" ry="96" fill="#fafaf9"/>
+<g transform="translate(0,627) scale(0.1,-0.1)" fill="#1c1917" stroke="none">
 <path d="M3040 6036 c0 -4 41 -52 91 -107 50 -55 90 -102 88 -103 -2 -2 -33 2
 -69 10 -128 27 -319 37 -482 25 -84 -7 -178 -17 -208 -24 l-55 -13 85 -32 c47
 -18 96 -41 109 -51 23 -18 23 -18 -64 -35 -150 -30 -309 -94 -482 -194 -35
