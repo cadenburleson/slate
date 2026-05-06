@@ -28,6 +28,11 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <meta name="twitter:card" content="summary" />
 
         <link rel="canonical" href={SITE_URL} />
+        {/* Order matters: browsers that support SVG favicons pick the first
+            <link>. The SVG embeds prefers-color-scheme rules so the icon
+            flips to light fill on dark-mode browser tabs (otherwise the
+            black silhouette disappears). PNG is fallback for older clients. */}
+        <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
         <link rel="icon" type="image/png" sizes="32x32" href={FAVICON_PNG} />
         <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
