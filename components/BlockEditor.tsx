@@ -36,24 +36,21 @@ export function useAutoGrow(min: number) {
 type ImageBlockType = Extract<Block, { type: "image" }>;
 type ImageWidth = NonNullable<ImageBlockType["width"]>;
 
-// Editor-preview width as a percentage of the editor's content column.
+// Editor-preview width as a percentage of the image block's container.
 // The DB keys (small/medium/large/full) are kept for back-compat with
-// existing image blocks; the percentages and labels here are tuned to
-// match how the live snippet renders each preset (see public/s.js
-// .slate-figure-{small,medium,large,full} CSS rules).
+// existing image blocks; both the editor preview percentages and the
+// rendered live-site CSS (see public/s.js .slate-figure-* rules) use
+// the same DB keys.
 //
-//  small  → 50% of column     — sits alongside text
-//  medium → 100% of column    — default; fills content width
-//  large  → 125% on host (breaks out of column); 100% in editor
-//  full   → 100vw on host (edge to edge); 100% in editor
-//
-// Editor caps at 100% because we can't reasonably bleed past the
-// editor container — the preset label tells the author what the
-// rendered output will do.
+// Editor preview can't bleed past the editor container, so it shows
+// approximate proportions — what matters is that all four sizes are
+// visibly distinct so the author knows their choice took effect. The
+// WIDTH_HINT line under each image spells out what the preset
+// actually does on the published site.
 const WIDTH_PERCENT: Record<ImageWidth, number> = {
-  small: 50,
-  medium: 100,
-  large: 100,
+  small: 40,
+  medium: 70,
+  large: 90,
   full: 100,
 };
 const WIDTH_LABEL: Record<ImageWidth, string> = {
@@ -61,6 +58,12 @@ const WIDTH_LABEL: Record<ImageWidth, string> = {
   medium: "Standard",
   large: "Wide",
   full: "Full",
+};
+const WIDTH_HINT: Record<ImageWidth, string> = {
+  small: "Sits alongside text — half-column",
+  medium: "Fills your site's content column",
+  large: "Breaks out 12.5% past column edges",
+  full: "Edge to edge — full viewport width",
 };
 
 function generateId() {
@@ -374,6 +377,10 @@ function ImageBlock({
           resizeMode="contain"
         />
       </View>
+
+      <Text className="text-stone-400 text-xs italic text-center mt-1">
+        {WIDTH_HINT[width]}
+      </Text>
 
       {error && <Text className="text-red-500 text-xs mt-1">{error}</Text>}
 
