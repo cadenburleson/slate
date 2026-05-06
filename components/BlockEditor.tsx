@@ -36,16 +36,30 @@ export function useAutoGrow(min: number) {
 type ImageBlockType = Extract<Block, { type: "image" }>;
 type ImageWidth = NonNullable<ImageBlockType["width"]>;
 
+// Editor-preview width as a percentage of the editor's content column.
+// The DB keys (small/medium/large/full) are kept for back-compat with
+// existing image blocks; the percentages and labels here are tuned to
+// match how the live snippet renders each preset (see public/s.js
+// .slate-figure-{small,medium,large,full} CSS rules).
+//
+//  small  → 50% of column     — sits alongside text
+//  medium → 100% of column    — default; fills content width
+//  large  → 125% on host (breaks out of column); 100% in editor
+//  full   → 100vw on host (edge to edge); 100% in editor
+//
+// Editor caps at 100% because we can't reasonably bleed past the
+// editor container — the preset label tells the author what the
+// rendered output will do.
 const WIDTH_PERCENT: Record<ImageWidth, number> = {
-  small: 25,
-  medium: 50,
-  large: 75,
+  small: 50,
+  medium: 100,
+  large: 100,
   full: 100,
 };
 const WIDTH_LABEL: Record<ImageWidth, string> = {
-  small: "S",
-  medium: "M",
-  large: "L",
+  small: "Inline",
+  medium: "Standard",
+  large: "Wide",
   full: "Full",
 };
 

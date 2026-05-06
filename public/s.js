@@ -44,7 +44,55 @@
     return MEDIA_BASE + "/" + value.slice(3) + "-" + px + ".webp";
   }
 
+  // Build a srcset across all three resolution variants so the browser
+  // can pick the smallest one that's still sharp for the device's DPR.
+  // Returns "" for non-r2: passthrough URLs (we don't know what variants
+  // exist for an arbitrary src).
+  function srcSetFor(value) {
+    if (!value || value.indexOf("r2:") !== 0) return "";
+    var stem = value.slice(3);
+    return [400, 800, 1600]
+      .map(function (px) { return MEDIA_BASE + "/" + stem + "-" + px + ".webp " + px + "w"; })
+      .join(", ");
+  }
+
+  // Hint to the browser how wide the rendered image will actually be at
+  // each viewport, so it can pair srcset with the right variant. Tuned
+  // to the same percentages the CSS classes below apply.
+  var SIZES_FOR_WIDTH = {
+    small:  "(max-width: 640px) 100vw, 50vw",
+    medium: "(max-width: 640px) 100vw, 800px",
+    large:  "(max-width: 640px) 100vw, 1000px",
+    full:   "100vw",
+  };
+
   if (!SITE_ID || SITE_ID === "YOUR_SITE_ID") return;
+
+  // ── Style Injection (one-time, scoped to slate classes) ─────────────────────
+  //
+  // Applies the size preset chosen in the editor as actual rendered CSS,
+  // so the live snippet matches the editor preview. Without this, the
+  // host site's own img CSS dictates layout and the user's preset gets
+  // ignored — which is the bug that prompted this code's existence.
+
+  (function injectStyles() {
+    if (document.getElementById("slate-styles")) return;
+    var style = document.createElement("style");
+    style.id = "slate-styles";
+    style.textContent = [
+      ".slate-figure{margin:1.25rem auto;text-align:center;max-width:100%;}",
+      ".slate-figure-small{max-width:50%;}",
+      ".slate-figure-medium{max-width:100%;}",
+      ".slate-figure-large{max-width:125%;margin-left:-12.5%;margin-right:-12.5%;}",
+      ".slate-figure-full{max-width:100vw;margin-left:calc(-50vw + 50%);margin-right:calc(-50vw + 50%);}",
+      ".slate-img{width:100%;height:auto;display:block;border-radius:6px;}",
+      ".slate-caption{font-size:0.875rem;color:#64748b;margin-top:0.5rem;font-style:italic;}",
+      "@media (max-width:640px){",
+      ".slate-figure-small,.slate-figure-medium,.slate-figure-large{max-width:100%;margin-left:0;margin-right:0;}",
+      "}",
+    ].join("");
+    (document.head || document.documentElement).appendChild(style);
+  })();
 
   // ── DOM Helpers ─────────────────────────────────────────────────────────────
 
@@ -94,10 +142,18 @@
         return listEl;
       }
       case "image": {
-        var fig = el("figure", "slate-figure");
+        var width = block.width || "full";
+        var fig = el("figure", "slate-figure slate-figure-" + width);
         var img = el("img", "slate-img");
-        img.src = srcFor(block.src, block.width || "full");
+        img.src = srcFor(block.src, width);
+        var srcset = srcSetFor(block.src);
+        if (srcset) {
+          img.srcset = srcset;
+          img.sizes = SIZES_FOR_WIDTH[width] || SIZES_FOR_WIDTH.full;
+        }
         img.alt = block.alt || "";
+        img.loading = "lazy";
+        img.decoding = "async";
         fig.appendChild(img);
         if (block.caption) {
           var cap = el("figcaption", "slate-caption");
