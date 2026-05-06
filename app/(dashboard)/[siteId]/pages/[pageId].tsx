@@ -190,20 +190,24 @@ export default function PageEditorScreen() {
     >
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingTop: headerHeight + 16, paddingHorizontal: 20, paddingBottom: 128 }}
+        contentContainerStyle={{ paddingTop: headerHeight + 16, paddingBottom: 128, alignItems: "center" }}
         keyboardDismissMode="interactive"
       >
-        <TitleInput value={title} onChange={handleTitleChange} />
-        <Text className="text-xs font-mono text-stone-400 mb-4">{page?.slug}</Text>
+        {/* Constrain to a typical reading column so the editor preview
+            matches the proportions readers actually see on host sites. */}
+        <View style={{ width: "100%", maxWidth: 720, paddingHorizontal: 20 }}>
+          <TitleInput value={title} onChange={handleTitleChange} />
+          <Text className="text-xs font-mono text-stone-400 mb-4">{page?.slug}</Text>
 
-        {page && (
-          <VisibilityPanel
-            page={page}
-            onChange={setVisibility}
-          />
-        )}
+          {page && (
+            <VisibilityPanel
+              page={page}
+              onChange={setVisibility}
+            />
+          )}
 
-        <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
+          <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

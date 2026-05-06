@@ -164,38 +164,41 @@ export default function PostEditorScreen() {
 
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-5 pt-4 pb-32"
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: 128, alignItems: "center" }}
         keyboardDismissMode="interactive"
       >
-        <PostTitleInput value={title} onChange={handleTitleChange} />
-        <Text className="text-xs font-mono text-stone-400 mb-4">{post?.slug}</Text>
+        {/* Match the reading-column width readers see on host sites. */}
+        <View style={{ width: "100%", maxWidth: 720, paddingHorizontal: 20 }}>
+          <PostTitleInput value={title} onChange={handleTitleChange} />
+          <Text className="text-xs font-mono text-stone-400 mb-4">{post?.slug}</Text>
 
-        {/* Tags */}
-        <View className="flex-row flex-wrap gap-1.5 mb-4">
-          {(post?.tags ?? []).map((tag) => (
-            <TouchableOpacity
-              key={tag}
-              onPress={() => removeTag(tag)}
-              className="flex-row items-center gap-1 bg-stone-200 border border-stone-200 px-2.5 py-1 rounded-full"
-            >
-              <Text className="text-stone-900 text-xs">{tag}</Text>
-              <Text className="text-stone-700 text-xs">✕</Text>
-            </TouchableOpacity>
-          ))}
-          <TextInput
-            className="text-xs text-stone-600 px-2.5 py-1 border border-dashed border-stone-300 rounded-full min-w-16"
-            placeholder="+ tag"
-            placeholderTextColor="#a8a29e"
-            value={tagInput}
-            onChangeText={setTagInput}
-            onSubmitEditing={addTag}
-            blurOnSubmit={false}
-            autoCapitalize="none"
-          />
+          {/* Tags */}
+          <View className="flex-row flex-wrap gap-1.5 mb-4">
+            {(post?.tags ?? []).map((tag) => (
+              <TouchableOpacity
+                key={tag}
+                onPress={() => removeTag(tag)}
+                className="flex-row items-center gap-1 bg-stone-200 border border-stone-200 px-2.5 py-1 rounded-full"
+              >
+                <Text className="text-stone-900 text-xs">{tag}</Text>
+                <Text className="text-stone-700 text-xs">✕</Text>
+              </TouchableOpacity>
+            ))}
+            <TextInput
+              className="text-xs text-stone-600 px-2.5 py-1 border border-dashed border-stone-300 rounded-full min-w-16"
+              placeholder="+ tag"
+              placeholderTextColor="#a8a29e"
+              value={tagInput}
+              onChangeText={setTagInput}
+              onSubmitEditing={addTag}
+              blurOnSubmit={false}
+              autoCapitalize="none"
+            />
+          </View>
+
+          <View className="h-px bg-stone-100 mb-4" />
+          <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
         </View>
-
-        <View className="h-px bg-stone-100 mb-4" />
-        <BlockEditor siteId={siteId} blocks={blocks} onChange={handleBlocksChange} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
