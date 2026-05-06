@@ -44,7 +44,7 @@ export default function LoginScreen() {
         className="flex-1 bg-stone-50"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-      <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
+      <View role="main" className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
         <Text
           role="heading"
           aria-level={1}

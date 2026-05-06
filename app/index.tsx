@@ -232,10 +232,12 @@ export default function LandingPage() {
       </Head>
       <ScrollView className="flex-1 bg-stone-50">
         <NavBar />
-        <HeroSection />
-        <StepsSection />
-        <FeaturesSection />
-        <CtaBanner />
+        <View role="main">
+          <HeroSection />
+          <StepsSection />
+          <FeaturesSection />
+          <CtaBanner />
+        </View>
         <Footer />
       </ScrollView>
     </>

@@ -41,7 +41,7 @@ export default function SignupScreen() {
 
   if (success) {
     return (
-      <View className="flex-1 bg-stone-50 justify-center items-center px-6">
+      <View role="main" className="flex-1 bg-stone-50 justify-center items-center px-6">
         <Text className="text-4xl mb-4">📬</Text>
         <Text
           role="heading"
@@ -72,7 +72,7 @@ export default function SignupScreen() {
         className="flex-1 bg-stone-50"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
+        <View role="main" className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
         <Text
           role="heading"
           aria-level={1}

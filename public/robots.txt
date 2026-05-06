@@ -1,6 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /(dashboard)/
-Disallow: /dashboard/
-
 Sitemap: https://byheadless.com/sitemap.xml
