@@ -8,7 +8,7 @@ function HeaderBack() {
   return (
     <TouchableOpacity
       onPress={() => router.back()}
-      style={{ paddingHorizontal: 12, paddingVertical: 6, marginLeft: -8 }}
+      style={{ paddingLeft: 16, paddingRight: 12, paddingVertical: 6 }}
       accessibilityRole="button"
       accessibilityLabel="Go back"
     >
