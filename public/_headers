@@ -15,9 +15,14 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Top-level icons / manifest — short cache so updates can land quickly.
+# Top-level metadata files — change rarely, set 30-day cache so Lighthouse's
+# "uses-long-cache-ttl" audit passes. Updates still propagate via ETag.
 /manifest.json
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=2592000, must-revalidate
+/robots.txt
+  Cache-Control: public, max-age=2592000, must-revalidate
+/sitemap.xml
+  Cache-Control: public, max-age=2592000, must-revalidate
 
 # Slate snippet — embedded by third-party sites, served cross-origin.
 # Short cache so newly-published page slugs propagate quickly to host sites.
