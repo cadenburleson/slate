@@ -1,15 +1,15 @@
-import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
+import Head from "expo-router/head";
+import Logo from "@/components/Logo";
 import { useAuth } from "@/lib/auth";
-
-const logo = require("../assets/logo.png");
 
 function NavBar() {
   const { user } = useAuth();
   return (
     <View className="flex-row items-center justify-between px-6 py-4 border-b border-stone-200">
       <View className="flex-row items-center gap-2">
-        <Image source={logo} style={{ width: 40, height: 40 }} resizeMode="contain" />
+        <Logo width={40} height={40} />
         <Text className="text-2xl font-bold text-stone-900 tracking-tight">Headless</Text>
       </View>
       <View className="flex-row items-center gap-3">
@@ -41,13 +41,19 @@ function NavBar() {
 function HeroSection() {
   return (
     <View className="items-center py-20 px-6">
-      <Image source={logo} style={{ width: 120, height: 120, marginBottom: 24 }} resizeMode="contain" />
+      <View className="mb-6">
+        <Logo width={120} height={120} />
+      </View>
       <View className="bg-stone-200 px-3 py-1 rounded-full mb-6">
         <Text className="text-stone-900 text-xs font-semibold uppercase tracking-wider">
           Headless CMS for any website
         </Text>
       </View>
-      <Text className="text-4xl font-bold text-stone-900 text-center leading-tight max-w-lg">
+      <Text
+        role="heading"
+        aria-level={1}
+        className="text-4xl font-bold text-stone-900 text-center leading-tight max-w-lg"
+      >
         Edit your site without touching code
       </Text>
       <Text className="mt-4 text-lg text-stone-500 text-center max-w-md leading-relaxed">
@@ -96,7 +102,11 @@ function StepsSection() {
 
   return (
     <View className="py-16 px-6 bg-stone-200">
-      <Text className="text-2xl font-bold text-stone-900 text-center mb-10">
+      <Text
+        role="heading"
+        aria-level={2}
+        className="text-2xl font-bold text-stone-900 text-center mb-10"
+      >
         How it works
       </Text>
       <View className="gap-6 max-w-lg mx-auto w-full">
@@ -142,7 +152,11 @@ function FeaturesSection() {
 
   return (
     <View className="py-16 px-6">
-      <Text className="text-2xl font-bold text-stone-900 text-center mb-10">
+      <Text
+        role="heading"
+        aria-level={2}
+        className="text-2xl font-bold text-stone-900 text-center mb-10"
+      >
         Everything you need
       </Text>
       <View className="flex-row flex-wrap gap-4 justify-center max-w-xl mx-auto">
@@ -165,7 +179,11 @@ function FeaturesSection() {
 function CtaBanner() {
   return (
     <View className="bg-stone-900 py-16 px-6 items-center">
-      <Text className="text-3xl font-bold text-white text-center mb-3">
+      <Text
+        role="heading"
+        aria-level={2}
+        className="text-3xl font-bold text-white text-center mb-3"
+      >
         Ready to simplify your site?
       </Text>
       <Text className="text-stone-300 text-center mb-8 max-w-sm">
@@ -184,7 +202,7 @@ function Footer() {
   return (
     <View className="bg-stone-200 py-12 px-6 items-center">
       <View className="flex-row items-center gap-3 mb-3">
-        <Image source={logo} style={{ width: 64, height: 64 }} resizeMode="contain" />
+        <Logo width={64} height={64} />
         <Text className="text-3xl text-stone-900 font-bold">Headless</Text>
       </View>
       <Text className="text-stone-500 text-sm">
@@ -197,34 +215,53 @@ function Footer() {
 export default function LandingPage() {
   if (Platform.OS !== "web") {
     return (
-      <View className="flex-1 items-center justify-center bg-stone-50 px-6">
-        <Image source={logo} style={{ width: 96, height: 96, marginBottom: 12 }} resizeMode="contain" />
-        <Text className="text-4xl font-bold text-stone-900 mb-2">Headless</Text>
-        <Text className="text-stone-500 text-center mb-8">
-          Manage your website content from anywhere.
-        </Text>
-        <Link href="/(auth)/login" asChild>
-          <TouchableOpacity className="bg-stone-900 px-6 py-3 rounded-xl w-full items-center mb-3">
-            <Text className="text-white font-semibold">Log in</Text>
-          </TouchableOpacity>
-        </Link>
-        <Link href="/(auth)/signup" asChild>
-          <TouchableOpacity className="border border-stone-200 px-6 py-3 rounded-xl w-full items-center">
-            <Text className="text-stone-700 font-semibold">Create account</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
+      <NativeFallback />
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-stone-50">
-      <NavBar />
-      <HeroSection />
-      <StepsSection />
-      <FeaturesSection />
-      <CtaBanner />
-      <Footer />
-    </ScrollView>
+    <>
+      <Head>
+        <title>Headless — A CMS that drops into any site via one script tag</title>
+        <meta
+          name="description"
+          content="Edit pages, blog posts, and service pages on any website without touching code. Add one snippet to your site's head and manage everything from a clean app — on any device."
+        />
+        <meta property="og:title" content="Headless — A CMS that drops into any site" />
+        <meta property="og:description" content="Edit any site without touching code. One snippet, any platform." />
+      </Head>
+      <ScrollView className="flex-1 bg-stone-50">
+        <NavBar />
+        <HeroSection />
+        <StepsSection />
+        <FeaturesSection />
+        <CtaBanner />
+        <Footer />
+      </ScrollView>
+    </>
+  );
+}
+
+function NativeFallback() {
+  return (
+    <View className="flex-1 items-center justify-center bg-stone-50 px-6">
+      <View className="mb-3">
+        <Logo width={96} height={96} />
+      </View>
+      <Text className="text-4xl font-bold text-stone-900 mb-2">Headless</Text>
+      <Text className="text-stone-500 text-center mb-8">
+        Manage your website content from anywhere.
+      </Text>
+      <Link href="/(auth)/login" asChild>
+        <TouchableOpacity className="bg-stone-900 px-6 py-3 rounded-xl w-full items-center mb-3">
+          <Text className="text-white font-semibold">Log in</Text>
+        </TouchableOpacity>
+      </Link>
+      <Link href="/(auth)/signup" asChild>
+        <TouchableOpacity className="border border-stone-200 px-6 py-3 rounded-xl w-full items-center">
+          <Text className="text-stone-700 font-semibold">Create account</Text>
+        </TouchableOpacity>
+      </Link>
+    </View>
   );
 }

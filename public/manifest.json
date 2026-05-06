@@ -1,0 +1,23 @@
+{
+  "name": "Headless",
+  "short_name": "Headless",
+  "description": "A CMS that drops into any site via one script tag.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#fafaf9",
+  "icons": [
+    {
+      "src": "/assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/favicon.png",
+      "sizes": "627x627",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

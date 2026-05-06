@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
+import Head from "expo-router/head";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 
@@ -34,12 +35,23 @@ export default function LoginScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-stone-50"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <>
+      <Head>
+        <title>Log in — Headless</title>
+        <meta name="description" content="Log in to your Headless account to manage pages, blog posts, and service pages on your sites." />
+      </Head>
+      <KeyboardAvoidingView
+        className="flex-1 bg-stone-50"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
       <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
-        <Text className="text-3xl font-bold text-stone-900 mb-1">Welcome back</Text>
+        <Text
+          role="heading"
+          aria-level={1}
+          className="text-3xl font-bold text-stone-900 mb-1"
+        >
+          Welcome back
+        </Text>
         <Text className="text-stone-500 mb-8">Log in to your Headless account</Text>
 
         {error && (
@@ -92,6 +104,7 @@ export default function LoginScreen() {
           </Link>
         </View>
       </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </>
   );
 }

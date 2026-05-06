@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
+import Head from "expo-router/head";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 
@@ -42,7 +43,11 @@ export default function SignupScreen() {
     return (
       <View className="flex-1 bg-stone-50 justify-center items-center px-6">
         <Text className="text-4xl mb-4">📬</Text>
-        <Text className="text-2xl font-bold text-stone-900 mb-2 text-center">
+        <Text
+          role="heading"
+          aria-level={1}
+          className="text-2xl font-bold text-stone-900 mb-2 text-center"
+        >
           Check your email
         </Text>
         <Text className="text-stone-500 text-center max-w-xs leading-relaxed">
@@ -58,12 +63,23 @@ export default function SignupScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-stone-50"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
-        <Text className="text-3xl font-bold text-stone-900 mb-1">Get started</Text>
+    <>
+      <Head>
+        <title>Sign up — Headless</title>
+        <meta name="description" content="Create a free Headless account and start editing any site without touching code." />
+      </Head>
+      <KeyboardAvoidingView
+        className="flex-1 bg-stone-50"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View className="flex-1 justify-center px-6 max-w-sm w-full mx-auto">
+        <Text
+          role="heading"
+          aria-level={1}
+          className="text-3xl font-bold text-stone-900 mb-1"
+        >
+          Get started
+        </Text>
         <Text className="text-stone-500 mb-8">Create your free Headless account</Text>
 
         {error && (
@@ -115,7 +131,8 @@ export default function SignupScreen() {
             </TouchableOpacity>
           </Link>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+        </View>
+      </KeyboardAvoidingView>
+    </>
   );
 }
