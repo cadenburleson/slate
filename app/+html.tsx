@@ -6,7 +6,7 @@ import { ScrollViewStyleReset } from "expo-router/html";
 // Bump the ?v= when icon files change so existing browsers/edge caches
 // fetch fresh — the underlying URLs are immutable from a CDN-config POV
 // only after this version tag is bumped.
-const ICON_VERSION = "2";
+const ICON_VERSION = "3";
 const FAVICON_PNG = `/assets/favicon.png?v=${ICON_VERSION}`;
 const FAVICON_SVG = `/assets/favicon.svg?v=${ICON_VERSION}`;
 const APPLE_TOUCH_ICON = `/assets/apple-touch-icon.png?v=${ICON_VERSION}`;
