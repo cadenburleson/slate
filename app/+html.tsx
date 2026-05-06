@@ -3,7 +3,6 @@
 // hero logo so Lighthouse has an LCP candidate before JS hydration.
 import { ScrollViewStyleReset } from "expo-router/html";
 
-const HERO_LOGO = "/assets/logo.svg";
 const FAVICON_PNG = "/assets/favicon.png";
 const SITE_URL = "https://byheadless.com";
 const DEFAULT_DESC =
@@ -29,12 +28,13 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <meta name="twitter:card" content="summary" />
 
         <link rel="canonical" href={SITE_URL} />
-        <link rel="icon" type="image/png" href={FAVICON_PNG} />
-        <link rel="apple-touch-icon" href={FAVICON_PNG} />
+        <link rel="icon" type="image/png" sizes="32x32" href={FAVICON_PNG} />
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
 
-        {/* Get the hero logo into cache before JS hydration kicks in */}
-        <link rel="preload" as="image" href={HERO_LOGO} type="image/svg+xml" />
+        {/* Expo's static rendering already auto-emits a preload for the SVG
+            because it's referenced as <img src> in SSR — no manual preload
+            needed here. */}
 
         <ScrollViewStyleReset />
       </head>

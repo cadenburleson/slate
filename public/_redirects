@@ -1,6 +1,10 @@
-# Cloudflare Pages SPA fallback
-# Served from dist/_redirects after `expo export -p web`. Static .html files
-# at known routes (e.g. /login, /signup) are served directly first; only
-# unmatched paths (like dynamic /[siteId]/...) fall back to index.html so
-# the client-side router can resolve them.
+# Cloudflare Pages redirects + SPA fallback.
+# Copied from dist/_redirects after `expo export -p web`.
+
+# Canonicalize www → apex so Google indexes one version, not two.
+https://www.byheadless.com/*  https://byheadless.com/:splat  301!
+
+# SPA fallback: known routes (e.g. /login, /signup) are served as their
+# pre-rendered .html first; only unmatched paths (like dynamic /[siteId]/...)
+# fall back to index.html so the client-side router can resolve them.
 /*  /index.html  200
