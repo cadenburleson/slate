@@ -13,11 +13,12 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 
 export default function SignupScreen() {
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -36,6 +37,19 @@ export default function SignupScreen() {
       setError(e.message ?? "Signup failed");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleGoogle() {
+    setGoogleLoading(true);
+    setError(null);
+    try {
+      await signInWithGoogle();
+      if (Platform.OS !== "web") router.replace("/(dashboard)");
+    } catch (e: any) {
+      setError(e.message ?? "Google sign-up failed");
+    } finally {
+      setGoogleLoading(false);
     }
   }
 
@@ -87,6 +101,24 @@ export default function SignupScreen() {
             <Text className="text-red-600 text-sm">{error}</Text>
           </View>
         )}
+
+        <TouchableOpacity
+          className="border border-stone-300 bg-white py-3 rounded-xl items-center flex-row justify-center mb-5"
+          onPress={handleGoogle}
+          disabled={googleLoading || loading}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="#1c1917" />
+          ) : (
+            <Text className="text-stone-900 font-medium">Continue with Google</Text>
+          )}
+        </TouchableOpacity>
+
+        <View className="flex-row items-center mb-5">
+          <View className="flex-1 h-px bg-stone-200" />
+          <Text className="mx-3 text-stone-400 text-xs uppercase tracking-wider">or</Text>
+          <View className="flex-1 h-px bg-stone-200" />
+        </View>
 
         <Text className="text-sm font-medium text-stone-700 mb-1">Email</Text>
         <TextInput
