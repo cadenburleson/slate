@@ -46,3 +46,7 @@ yarn-error.*
 .agents/
 skills-lock.json
 .test-build/
+.playwright-mcp/
+
+# Supabase CLI scratch dir
+supabase/.temp/
